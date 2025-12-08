@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .reg-card {
+        max-width: 650px;
+        margin: auto;
+        padding: 35px;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .title {
+        font-size: 32px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0d6efd;
+    }
+
+    label {
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 17px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .btn-big {
+        width: 100%;
+        font-size: 20px;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 700;
+    }
+</style>
+
+<div class="reg-card mt-4">
+
+    <h2 class="title">Student Registration</h2>
+
+    <form method="POST">
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Full Name</label>
+                <input type="text" name="name" class="form-control" required placeholder="Enter student name">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Email Address</label>
+                <input type="email" name="email" class="form-control" required placeholder="Enter email">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required placeholder="Create password">
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Department</label>
+                <select name="department" class="form-select" required>
+                    <option value="">Select Department</option>
+                    <option value="CSE (Network)">CSE (Network)</option>
+                    <option value="CSE (Cybersecurity)">CSE (Cybersecurity)</option>
+                    <option value="CE">Civil Engineering</option>
+                    <option value="ME">Mechanical Engineering</option>
+                    <option value="EE">Electrical Engineering</option>
+                    <option value="ECE">Electronics & Communication</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Semester</label>
+                <select name="semester" class="form-select" required>
+                    <option value="">Select Semester</option>
+                    <option value="1">1st</option>
+                    <option value="2">2nd</option>
+                    <option value="3">3rd</option>
+                    <option value="4">4th</option>
+                    <option value="5">5th</option>
+                    <option value="6">6th</option>
+                    <option value="7">7th</option>
+                    <option value="8">8th</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Roll Number</label>
+                <input type="text" name="roll_no" class="form-control" required placeholder="22CSE20">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Registration Number</label>
+                <input type="text" name="registration_no" class="form-control" required
+                    placeholder="University Reg. No">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Parent Phone (WhatsApp)</label>
+                <input type="text" name="parent_phone" class="form-control" required
+                    placeholder="Parent WhatsApp Number">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Parent Email</label>
+                <input type="email" name="parent_email" class="form-control" required placeholder="Parent Email ID">
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-big mt-2">Register Student</button>
+
+    </form>
+</div>
+
+{% endblock %}

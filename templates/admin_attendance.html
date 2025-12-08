@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h2 class="fw-bold text-primary mb-4" style="font-size: 32px;">
+        Mark Attendance
+    </h2>
+
+    <!-- ========================= FILTERS ========================= -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body">
+            <h4 class="fw-bold mb-3">Select Branch & Semester</h4>
+
+            <form method="GET" class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="fw-bold">Department</label>
+                    <select name="department" class="form-select" style="font-size:18px;">
+                        <option value="">All</option>
+                        <option value="CSE (Network)">CSE (Network)</option>
+                        <option value="CSE (Cyber Security)">CSE (Cyber Security)</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="ECE">ECE</option>
+                        <option value="EE">EE</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="fw-bold">Semester</label>
+                    <select name="semester" class="form-select" style="font-size:18px;">
+                        <option value="">All</option>
+                        <option value="1">1st Semester</option>
+                        <option value="2">2nd Semester</option>
+                        <option value="3">3rd Semester</option>
+                        <option value="4">4th Semester</option>
+                        <option value="5">5th Semester</option>
+                        <option value="6">6th Semester</option>
+                        <option value="7">7th Semester</option>
+                        <option value="8">8th Semester</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mt-4 pt-2 text-end">
+                    <button class="btn btn-primary px-5" style="font-size:18px;">Filter</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- ========================= ATTENDANCE FORM ========================= -->
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label class="fw-bold">Attendance Date</label>
+                        <input type="date" name="date" class="form-control form-control-lg" required>
+                    </div>
+                </div>
+
+                <h4 class="fw-bold text-dark mb-3">Students List</h4>
+
+                {% if students %}
+
+                <table class="table table-bordered table-striped" style="font-size:18px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Roll No</th>
+                            <th>Registration No</th>
+                            <th>Attendance %</th>
+                            <th>Mark</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td>{{ s.name }}</td>
+                            <td>{{ s.roll_no }}</td>
+                            <td>{{ s.registration_no }}</td>
+
+                            {% if s.percent >= 75 %}
+                            <td class="text-success fw-bold">{{ s.percent }}%</td>
+                            {% else %}
+                            <td class="text-danger fw-bold">{{ s.percent }}%</td>
+                            {% endif %}
+
+                            <td>
+                                <select name="status_{{ s.id }}" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Present">Present</option>
+                                    <option value="Absent">Absent</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+                <div class="text-end mt-4">
+                    <button class="btn btn-success px-5 py-2" style="font-size:22px;">
+                        Save Attendance
+                    </button>
+                </div>
+
+                {% else %}
+                <p class="text-center text-muted">No students found for this branch/semester.</p>
+                {% endif %}
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

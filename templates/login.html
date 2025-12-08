@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .login-card {
+        max-width: 480px;
+        margin: auto;
+        padding: 35px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(6px);
+    }
+
+    .login-title {
+        font-size: 32px;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        color: #0d6efd;
+    }
+
+    label {
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .form-control {
+        font-size: 17px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .btn-login {
+        width: 100%;
+        font-size: 20px;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 700;
+    }
+
+    .extra-links a {
+        font-size: 17px;
+        font-weight: 600;
+        text-decoration: none;
+        color: #0d6efd;
+    }
+
+    .extra-links a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+
+<div class="login-card mt-5">
+
+    <h1 class="login-title">Login</h1>
+
+    <form method="POST">
+
+        <div class="mb-3">
+            <label>Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+        </div>
+
+        <button class="btn btn-primary btn-login mt-3">
+            Login
+        </button>
+
+    </form>
+
+    <div class="extra-links text-center mt-3">
+        <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+    </div>
+
+    <hr>
+
+    <div class="extra-links text-center">
+        <p class="mt-2">New Student?
+            <a href="{{ url_for('register_student') }}">Register Here</a>
+        </p>
+
+        <p>New Admin?
+            <a href="{{ url_for('register_admin') }}">Register Here</a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}
