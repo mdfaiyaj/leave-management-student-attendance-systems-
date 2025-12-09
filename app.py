@@ -795,23 +795,23 @@ def create_developer():
     conn = get_db_connection()
 
     dev = conn.execute(
-        "SELECT * FROM users WHERE role='developer'"
+        "SELECT * FROM users WHERE email='developer@admin.com'"
     ).fetchone()
 
     if not dev:
         conn.execute("""
-            INSERT INTO users (name, email, password, role)
-            VALUES ('Developer', 'developer@admin.com', 'dev123', 'developer')
+            INSERT INTO users (name, email, password, role, admin_branch)
+            VALUES ('Developer', 'developer@admin.com', 'dev123', 'developer', 'ALL')
         """)
         conn.commit()
 
     conn.close()
 
-create_developer()
 
 # ---------- Run ----------
 if __name__ == "__main__":
     # Port for Render or local default 5000
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
 
