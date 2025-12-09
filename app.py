@@ -238,36 +238,54 @@ def register_admin():
     return render_template("register_admin.html")
 
 # ---------- Login / Logout ----------
+# ---------- Login / Logout ----------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "").strip()
+
         conn = get_db_connection()
-        user = conn.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password)).fetchone()
+        user = conn.execute(
+            "SELECT * FROM users WHERE email=? AND password=?",
+            (email, password)
+        ).fetchone()
         conn.close()
+
         if user:
             session["user_id"] = user["id"]
             session["user_name"] = user["name"]
             session["user_role"] = user["role"]
             session["user_photo"] = user["photo"]
-            # admin branch
+
+            # -------- Developer Login --------
+            if user["role"] == "developer":
+                session["dev"] = True
+                return redirect(url_for("dev_dashboard"))
+
+            # -------- Admin Login --------
             if user["role"] == "admin":
                 session["admin_branch"] = user["admin_branch"]
                 return redirect(url_for("admin_dashboard"))
-            else:
+
+            # -------- Student Login --------
+            if user["role"] == "student":
                 session["student_branch"] = user["department"]
                 session["student_roll"] = user["roll_no"]
                 session["student_reg"] = user["registration_no"]
                 return redirect(url_for("student_dashboard"))
+
         flash("Invalid credentials", "danger")
+
     return render_template("login.html")
+
 
 @app.route("/logout")
 def logout():
     session.clear()
     flash("Logged out", "info")
     return redirect(url_for("login"))
+
 
 # ---------- Forgot password ----------
 @app.route("/forgot-password", methods=["GET", "POST"])
@@ -806,6 +824,12 @@ def create_developer():
         conn.commit()
 
     conn.close()
+@app.route("/dev/dashboard")
+def dev_dashboard():
+    if not session.get("dev"):
+        return "Access Denied", 403
+
+    return "WELCOME DEVELOPER — Full System Control Panel"
 
 
 # ---------- Run ----------
@@ -813,5 +837,6 @@ if __name__ == "__main__":
     # Port for Render or local default 5000
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
 
 
