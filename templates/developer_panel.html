@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="fw-bold mb-4" style="font-size: 32px;">
+        🛠 Developer Control Panel
+    </h2>
+
+    <div class="alert alert-info" style="font-size: 18px;">
+        Logged in as: <strong>Developer</strong>
+    </div>
+
+    <div class="row">
+
+        <!-- LEFT SIDE : ACTIONS -->
+        <div class="col-md-4">
+            <div class="card shadow p-3" style="border-radius: 12px;">
+                <h4 class="fw-bold mb-3">⚡ Quick Actions</h4>
+
+                <a href="{{ url_for('developer_clear_students') }}" class="btn btn-danger w-100 mb-2"
+                    style="font-size: 18px;">
+                    Delete All Students
+                </a>
+
+                <a href="{{ url_for('developer_clear_leaves') }}" class="btn btn-warning w-100 mb-2"
+                    style="font-size: 18px;">
+                    Delete All Leaves
+                </a>
+
+                <a href="{{ url_for('developer_clear_attendance') }}" class="btn btn-info w-100 mb-2 text-white"
+                    style="font-size: 18px;">
+                    Delete All Attendance
+                </a>
+                <a href="{{ url_for('developer_clear_admins') }}" class="btn btn-danger w-100 mb-2"
+                    style="font-size:18px;">
+                    Delete All Admins
+                </a>
+
+
+                <a href="{{ url_for('developer_reset_db') }}" class="btn btn-dark w-100 mb-2" style="font-size: 18px;">
+                    Reset Complete Database
+                </a>
+
+                <a href="{{ url_for('developer_logout') }}" class="btn btn-secondary w-100" style="font-size: 18px;">
+                    Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE : USERS LIST -->
+        <div class="col-md-8">
+            <div class="card shadow p-3" style="border-radius: 12px;">
+                <h4 class="fw-bold mb-3">👥 Registered Users</h4>
+
+                <table class="table table-bordered table-striped" style="font-size: 18px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u.id }}</td>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.role }}</td>
+                            <td>{{ u.department or "-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
