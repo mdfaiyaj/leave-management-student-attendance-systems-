@@ -790,9 +790,28 @@ def init_db_route():
     # This route helps you initialize DB once on server (protected lightly)
     create_tables()
     return "DB initialized."
+# ================= AUTO CREATE DEVELOPER ================= #
+def create_developer():
+    conn = get_db_connection()
+
+    dev = conn.execute(
+        "SELECT * FROM users WHERE role='developer'"
+    ).fetchone()
+
+    if not dev:
+        conn.execute("""
+            INSERT INTO users (name, email, password, role)
+            VALUES ('Developer', 'developer@admin.com', 'dev123', 'developer')
+        """)
+        conn.commit()
+
+    conn.close()
+
+create_developer()
 
 # ---------- Run ----------
 if __name__ == "__main__":
     # Port for Render or local default 5000
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
