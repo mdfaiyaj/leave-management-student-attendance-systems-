@@ -90,6 +90,23 @@
             <a href="{{ url_for('register_admin') }}">Register Here</a>
         </p>
     </div>
+    <!-- Developer Login Button -->
+<div style="text-align: center; margin-top: 15px;">
+    <a href="#" onclick="fillDeveloperLogin()" 
+       style="color: #ff5722; font-weight: bold; text-decoration: none;">
+        Developer Login
+    </a>
 </div>
+
+<script>
+function fillDeveloperLogin() {
+    document.getElementById("email").value = "developer@admin.com";
+    document.getElementById("password").value = "dev123";
+    alert("Developer credentials filled. Click Login.");
+}
+</script>
+
+</div>
+
 
 {% endblock %}
