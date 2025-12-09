@@ -237,13 +237,33 @@ def register_admin():
             conn.close()
     return render_template("register_admin.html")
 
-# ---------- Login / Logout ----------
-# ---------- Login / Logout ----------
+# ================= LOGIN ================= #
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    mode = request.args.get("mode", "normal")    # normal / developer
+
+    # ---------- Developer Login Mode ----------
+    if mode == "developer":
+        if request.method == "POST":
+            email = request.form["email"].strip().lower()
+            password = request.form["password"].strip()
+
+            # Developer hard-coded credentials
+            if email == "developer@admin.com" and password == "dev123":
+                session["user_role"] = "developer"
+                session["user_name"] = "Developer"
+                return redirect(url_for("developer_dashboard"))
+
+            flash("Invalid Developer Credentials!", "danger")
+            return redirect(url_for("login", mode="developer"))
+
+        # Render Developer Login Page
+        return render_template("login.html", developer_mode=True)
+
+    # ---------- Normal Login (Student + Admin) ----------
     if request.method == "POST":
-        email = request.form.get("email", "").strip().lower()
-        password = request.form.get("password", "").strip()
+        email = request.form["email"].strip().lower()
+        password = request.form["password"].strip()
 
         conn = get_db_connection()
         user = conn.execute(
@@ -258,34 +278,36 @@ def login():
             session["user_role"] = user["role"]
             session["user_photo"] = user["photo"]
 
-            # -------- Developer Login --------
-            if user["role"] == "developer":
-                session["dev"] = True
-                return redirect(url_for("dev_dashboard"))
-
-            # -------- Admin Login --------
+            # ------------ ADMIN LOGIN ------------
             if user["role"] == "admin":
                 session["admin_branch"] = user["admin_branch"]
                 return redirect(url_for("admin_dashboard"))
 
-            # -------- Student Login --------
-            if user["role"] == "student":
+            # ------------ STUDENT LOGIN ------------
+            else:
                 session["student_branch"] = user["department"]
                 session["student_roll"] = user["roll_no"]
                 session["student_reg"] = user["registration_no"]
                 return redirect(url_for("student_dashboard"))
 
-        flash("Invalid credentials", "danger")
+        else:
+            flash("Invalid Email or Password", "danger")
 
-    return render_template("login.html")
+    return render_template("login.html", developer_mode=False)
 
-
+# ================= LOGOUT (Student + Admin + Developer) ================= #
 @app.route("/logout")
 def logout():
+    user = session.get("user_role", "user")
+    
     session.clear()
-    flash("Logged out", "info")
-    return redirect(url_for("login"))
 
+    if user == "developer":
+        flash("Developer logged out successfully!", "info")
+        return redirect(url_for("login", mode="developer"))
+
+    flash("Logged out successfully!", "info")
+    return redirect(url_for("login"))
 
 # ---------- Forgot password ----------
 @app.route("/forgot-password", methods=["GET", "POST"])
@@ -837,6 +859,7 @@ if __name__ == "__main__":
     # Port for Render or local default 5000
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
 
 
 
