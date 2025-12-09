@@ -13,7 +13,11 @@
 <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card shadow p-4" style="width: 380px;">
 
-        <h3 class="text-center mb-3">Login</h3>
+        {% if developer_mode %}
+    <h3 class="text-center mb-3">Developer Login</h3>
+{% else %}
+    <h3 class="text-center mb-3">Login</h3>
+{% endif %}
 
         <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -70,3 +74,4 @@
 
 </body>
 </html>
+
