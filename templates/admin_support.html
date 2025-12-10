@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="text-primary fw-bold">Student Support Messages</h3>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Student</th>
+        <th>Message</th>
+        <th>Admin Reply</th>
+        <th>Action</th>
+    </tr>
+
+    {% for msg in messages %}
+    <tr>
+        <td>{{ msg.student_name }}</td>
+        <td>{{ msg.student_message }}</td>
+        <td>{{ msg.admin_reply if msg.admin_reply else "No reply yet" }}</td>
+
+        <td>
+            <form method="POST" action="{{ url_for('admin_support_reply', id=msg.id) }}">
+                <input type="text" name="reply" class="form-control" placeholder="Type reply...">
+                <button class="btn btn-success btn-sm mt-1">Send</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
