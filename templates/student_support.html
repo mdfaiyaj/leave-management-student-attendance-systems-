@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .chat-box {
+    max-width: 900px;
+    margin: auto;
+    background: #e5ddd5;
+    padding: 15px;
+    border-radius: 10px
+  }
+
+  .chat {
+    display: flex;
+    margin-bottom: 10px
+  }
+
+  .student {
+    justify-content: flex-end
+  }
+
+  .admin {
+    justify-content: flex-start
+  }
+
+  .bubble {
+    max-width: 65%;
+    padding: 10px;
+    border-radius: 10px;
+    background: #dcf8c6
+  }
+
+  .admin .bubble {
+    background: #fff
+  }
+
+  .time {
+    font-size: 12px;
+    color: gray;
+    text-align: right
+  }
+
+  .tick.gray {
+    color: gray
+  }
+
+  .tick.blue {
+    color: #34b7f1
+  }
+</style>
+
+<h4 class="text-center">💬 Support / Contact Admin</h4>
+
+<div class="chat-box">
+  {% for m in messages %}
+  <div class="chat student">
+    <div class="bubble">
+      {{ m.content }}
+      <div class="time">
+        {{ m.created_at }}
+        {% if m.seen==1 %}
+        <span class="tick blue">✔✔</span>
+        {% else %}
+        <span class="tick gray">✔</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if m.reply %}
+  <div class="chat admin">
+    <div class="bubble">
+      {{ m.reply }}
+      <div class="time">Seen <span class="tick blue">✔✔</span></div>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+
+<form method="POST" class="mt-3">
+  <div class="input-group">
+    <textarea name="content" class="form-control" required></textarea>
+    <button class="btn btn-success">Send</button>
+  </div>
+</form>
+{% endblock %}

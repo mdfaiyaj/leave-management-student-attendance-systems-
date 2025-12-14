@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Attendance Records</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Registration No</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for a in data %}
+                <tr>
+                    <td>{{ a.date }}</td>
+                    <td>
+                        {% if a.status == "Present" %}
+                        <span class="badge bg-success">Present</span>
+                        {% else %}
+                        <span class="badge bg-danger">Absent</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.roll_no }}</td>
+                    <td>{{ a.registration_no }}</td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">No attendance records.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
