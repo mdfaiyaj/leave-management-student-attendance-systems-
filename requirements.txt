@@ -4,4 +4,5 @@ Flask-Mail
 twilio
 openpyxl
 fpdf
+reportlab
 gunicorn
