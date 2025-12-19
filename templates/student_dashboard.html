@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <!-- ================= HEADER ================= -->
+    <h2 class="fw-bold text-primary mb-4" style="font-size: 32px;">
+        Student Dashboard
+    </h2>
+
+    <!-- ================= LEAVE STATS ================= -->
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 p-3 text-center">
+                <h5 class="text-secondary">Total Leaves</h5>
+                <h2 class="fw-bold">{{ stats.total or 0 }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 p-3 text-center">
+                <h5 class="text-success">Approved</h5>
+                <h2 class="fw-bold text-success">{{ stats.approved or 0 }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 p-3 text-center">
+                <h5 class="text-warning">Pending</h5>
+                <h2 class="fw-bold text-warning">{{ stats.pending or 0 }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 p-3 text-center">
+                <h5 class="text-danger">Rejected</h5>
+                <h2 class="fw-bold text-danger">{{ stats.rejected or 0 }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= OVERALL ATTENDANCE SUMMARY ================= -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body text-center">
+
+            <h4 class="fw-bold text-primary mb-3">Overall Attendance Summary</h4>
+
+            {% set total = attendance|length %}
+            {% set present = attendance|selectattr("status", "equalto", "Present")|list|length %}
+            {% set absent = total - present %}
+            {% set percent = (present / total * 100) if total > 0 else 0 %}
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Total Days</h5>
+                    <h2 class="fw-bold">{{ total }}</h2>
+                </div>
+
+                <div class="col-md-4">
+                    <h5 class="text-success">Present</h5>
+                    <h2 class="fw-bold text-success">{{ present }}</h2>
+                </div>
+
+                <div class="col-md-4">
+                    <h5 class="text-danger">Absent</h5>
+                    <h2 class="fw-bold text-danger">{{ absent }}</h2>
+                </div>
+            </div>
+
+            <hr>
+
+            <h4 class="fw-bold">Attendance Percentage</h4>
+
+            {% if percent >= 75 %}
+            <h2 class="fw-bold text-success">{{ percent|round(2) }}%</h2>
+            {% else %}
+            <h2 class="fw-bold text-danger">{{ percent|round(2) }}%</h2>
+            <p class="text-danger fw-bold">Attendance below required limit!</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ================= SUBJECT WISE ATTENDANCE ================= -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body">
+
+            <h4 class="fw-bold text-primary mb-3">
+                Subject-wise Attendance (Semester {{ semester }})
+            </h4>
+
+            {% if subject_attendance %}
+            <table class="table table-bordered table-striped" style="font-size:18px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Subject</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Total</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for s in subject_attendance %}
+                    {% set present = s.present_days or 0 %}
+                    {% set total = s.total_classes or 0 %}
+                    {% set absent = total - present %}
+                    {% set percent = (present / total * 100) if total > 0 else 0 %}
+
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ s.subject }}</td>
+                        <td class="fw-bold text-success">{{ present }}</td>
+                        <td class="fw-bold text-danger">{{ absent }}</td>
+                        <td>{{ total }}</td>
+
+                        {% if percent >= 75 %}
+                        <td class="fw-bold text-success">{{ percent|round(1) }}%</td>
+                        {% else %}
+                        <td class="fw-bold text-danger">{{ percent|round(1) }}%</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No subject-wise attendance available.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ================= DAILY ATTENDANCE TABLE ================= -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body">
+
+            <h4 class="fw-bold text-primary mb-3">Daily Attendance Details</h4>
+
+            {% if attendance %}
+            <table class="table table-bordered table-striped" style="font-size:18px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for a in attendance %}
+                    <tr>
+                        <td>{{ a.date }}</td>
+                        {% if a.status == "Present" %}
+                        <td class="fw-bold text-success">{{ a.status }}</td>
+                        {% else %}
+                        <td class="fw-bold text-danger">{{ a.status }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No attendance records found.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ================= LEAVE HISTORY ================= -->
+    <div class="card shadow-lg border-0 mb-5">
+        <div class="card-body">
+
+            <h4 class="fw-bold text-primary mb-3">Your Leave Applications</h4>
+
+            <a href="{{ url_for('apply_leave') }}" class="btn btn-success mb-3">
+                Apply New Leave
+            </a>
+
+            {% if leaves %}
+            <table class="table table-bordered table-striped" style="font-size:18px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Reason</th>
+                        <th>Medical</th>
+                        <th>Status</th>
+                        <th>Decision</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for l in leaves %}
+                    <tr>
+                        <td>{{ l.from_date }}</td>
+                        <td>{{ l.to_date }}</td>
+                        <td>{{ l.reason }}</td>
+
+                        <td>
+                            {% if l.medical_file %}
+                            <a href="{{ url_for('static', filename='medical/' ~ l.medical_file) }}" target="_blank"
+                                class="btn btn-sm btn-info">
+                                View
+                            </a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+
+                        {% if l.status == "Approved" %}
+                        <td class="fw-bold text-success">{{ l.status }}</td>
+                        {% elif l.status == "Rejected" %}
+                        <td class="fw-bold text-danger">{{ l.status }}</td>
+                        {% else %}
+                        <td class="fw-bold text-warning">{{ l.status }}</td>
+                        {% endif %}
+
+                        <td>{{ l.decision_reason or "-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No leave applications yet.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

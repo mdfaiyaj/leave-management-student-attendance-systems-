@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h2 class="fw-bold text-primary mb-4">Mark Attendance</h2>
+
+    <!-- ================= FILTER FORM (GET) ================= -->
+    <form method="GET" class="row g-3 mb-4">
+
+        <!-- CSE SUB BRANCH -->
+        {% if admin_branch and "CSE" in admin_branch %}
+        <div class="col-md-3">
+            <label class="fw-bold">CSE Branch</label>
+            <select name="sub_branch" class="form-select" required>
+                <option value="">Select</option>
+                <option value="CSE (Network)" {% if sub_branch=="CSE (Network)" %}selected{% endif %}>
+                    CSE (Network)
+                </option>
+                <option value="CSE (Cyber Security)" {% if sub_branch=="CSE (Cyber Security)" %}selected{% endif %}>
+                    CSE (Cyber Security)
+                </option>
+            </select>
+        </div>
+        {% endif %}
+
+        <!-- Semester -->
+        <div class="col-md-3">
+            <label class="fw-bold">Semester</label>
+            <select name="semester" class="form-select" required>
+                <option value="">Select</option>
+                {% for i in range(1,9) %}
+                <option value="{{ i }}" {% if semester==i %}selected{% endif %}>
+                    {{ i }} Semester
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Load -->
+        <div class="col-md-2 align-self-end">
+            <button class="btn btn-primary w-100">Load</button>
+        </div>
+
+        <!-- Subject -->
+        {% if subjects %}
+        <div class="col-md-4">
+            <label class="fw-bold">Subject</label>
+            <select name="subject_id" class="form-select" onchange="this.form.submit()" required>
+                <option value="">Select Subject</option>
+                {% for s in subjects %}
+                <option value="{{ s.id }}" {% if subject_id==s.id %}selected{% endif %}>
+                    {{ s.name }}
+                </option>
+                {% endfor %}
+            </select>
+
+        </div>
+        {% endif %}
+
+    </form>
+
+    <!-- ================= ATTENDANCE FORM (POST) ================= -->
+    {% if students %}
+    <form method="POST">
+
+        <!-- IMPORTANT HIDDEN VALUES -->
+        <input type="hidden" name="semester" value="{{ semester }}">
+        {% if subject_id %}
+        <input type="hidden" name="subject_id" value="{{ subject_id }}">
+        {% endif %}
+        {% if sub_branch %}
+        <input type="hidden" name="sub_branch" value="{{ sub_branch }}">
+        {% endif %}
+
+        <!-- Date -->
+        <div class="col-md-3 mb-3">
+            <label class="fw-bold">Date</label>
+            <input type="date" name="date" class="form-control" required>
+        </div>
+
+        <!-- Student Table -->
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Roll</th>
+                    <th>Registration</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.roll_no }}</td>
+                    <td>{{ s.registration_no }}</td>
+                    <td>
+                        <select name="status_{{ s.id }}" class="form-select" required>
+                            <option value="">Select</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button class="btn btn-success px-5">Save Attendance</button>
+    </form>
+    {% endif %}
+
+</div>
+
+{% endblock %}

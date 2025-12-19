@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+  <h3 class="fw-bold text-primary mb-4">
+    📝 Apply Leave
+  </h3>
+
+  <div class="card shadow-lg">
+    <div class="card-body">
+
+      <form method="POST" enctype="multipart/form-data">
+
+        <div class="mb-3">
+          <label class="fw-bold">From Date</label>
+          <input type="date" name="from_date" id="from_date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="fw-bold">To Date</label>
+          <input type="date" name="to_date" id="to_date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="fw-bold">Reason</label>
+          <textarea name="reason" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <!-- 🔴 Medical Certificate -->
+        <div class="mb-3" id="medicalBox" style="display:none;">
+          <label class="fw-bold text-danger">
+            Medical Certificate (Required for 15 days or more)
+          </label>
+          <input type="file" name="medical_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+        </div>
+
+        <button class="btn btn-success px-4">
+          ✅ Apply Leave
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function checkDays() {
+    let from = document.getElementById("from_date").value;
+    let to = document.getElementById("to_date").value;
+
+    if (!from || !to) return;
+
+    let d1 = new Date(from);
+    let d2 = new Date(to);
+
+    let days = Math.floor((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+
+    if (days >= 15) {
+      document.getElementById("medicalBox").style.display = "block";
+    } else {
+      document.getElementById("medicalBox").style.display = "none";
+    }
+  }
+
+  document.getElementById("from_date").addEventListener("change", checkDays);
+  document.getElementById("to_date").addEventListener("change", checkDays);
+</script>
+
+{% endblock %}
