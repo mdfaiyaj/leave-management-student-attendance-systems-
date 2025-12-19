@@ -3,4 +3,5 @@ Flask
 Flask-Mail
 twilio
 openpyxl
+fpdf
 gunicorn
