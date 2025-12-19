@@ -624,12 +624,19 @@ def admin_dashboard():
 
     # 📄 Leave Applications (branch-wise)
     leaves = conn.execute("""
-        SELECT l.*, u.name, u.roll_no, u.department
-        FROM leaves l
-        JOIN users u ON l.student_id = u.id
-        WHERE u.department LIKE ?
-        ORDER BY l.applied_on DESC
-    """, (f"{branch}%",)).fetchall()
+    SELECT
+        l.*,
+        u.name,
+        u.roll_no,
+        u.registration_no,
+        u.semester,
+        u.department
+    FROM leaves l
+    JOIN users u ON l.student_id = u.id
+    WHERE u.department LIKE ?
+    ORDER BY l.applied_on DESC
+ """, (f"%{branch}%",)).fetchall()
+
 
     # 📊 Leave Statistics
     stats = {
@@ -1378,4 +1385,5 @@ def dev_reset_db():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
+
     app.run(debug=True)
