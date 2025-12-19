@@ -80,8 +80,10 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Student</th>
-                        <th>Roll No</th>
+                        <th>Semester</th>
                         <th>Department</th>
+                        <th>Roll No</th>
+                        <th>Registration No</th>
                         <th>From</th>
                         <th>To</th>
                         <th>Reason</th>
@@ -97,8 +99,10 @@
                     {% for l in leaves %}
                     <tr>
                         <td>{{ l.name }}</td>
-                        <td>{{ l.roll_no }}</td>
+                        <td>{{ l.semester }}</td>
                         <td>{{ l.department }}</td>
+                        <td>{{ l.roll_no }}</td>
+                        <td>{{ l.registration_no }}</td>
                         <td>{{ l.from_date }}</td>
                         <td>{{ l.to_date }}</td>
                         <td>{{ l.reason }}</td>
@@ -152,5 +156,6 @@
     </div>
 
 </div>
+
 
 {% endblock %}
