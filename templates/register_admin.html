@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .reg-card {
+    max-width: 600px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0d6efd;
+  }
+
+  label {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 17px;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .btn-big {
+    width: 100%;
+    font-size: 20px;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+</style>
+
+<div class="reg-card mt-4">
+
+  <h2 class="title">Admin Registration</h2>
+
+  <form method="POST">
+
+    <div class="mb-3">
+      <label>Admin Full Name</label>
+      <input type="text" name="name" class="form-control" required placeholder="Enter admin name">
+    </div>
+
+    <div class="mb-3">
+      <label>Email Address</label>
+      <input type="email" name="email" class="form-control" required placeholder="Enter admin email">
+    </div>
+
+    <div class="mb-3">
+      <label>Create Password</label>
+      <input type="password" name="password" class="form-control" required placeholder="Create admin password">
+    </div>
+
+    <div class="mb-3">
+      <label>Admin Branch</label>
+      <select name="admin_branch" class="form-select" required>
+        <option value="">Select Branch</option>
+        <option value="CSE">CSE (Networks + Cybersecurity)</option>
+        <option value="CE">Civil Engineering</option>
+        <option value="ME">Mechanical Engineering</option>
+        <option value="EE">Electrical Engineering</option>
+        <option value="ECE">Electronics & Communication</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="fw-bold">Admin Security Code</label>
+      <input type="password" name="security_code" class="form-control" placeholder="Enter Admin Security Code" required>
+    </div>
+
+
+    <button class="btn btn-primary btn-big mt-2">Register Admin</button>
+
+  </form>
+</div>
+
+{% endblock %}

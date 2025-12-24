@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h2 class="fw-bold text-primary mb-4" style="font-size: 32px;">
+        Admin Dashboard
+    </h2>
+
+    <!-- ========================= TOP BUTTONS ========================= -->
+    <div class="mb-4">
+
+        <a href="{{ url_for('admin_users') }}" class="btn btn-dark me-2">
+            📘 Explore Students
+        </a>
+
+        <a href="{{ url_for('admin_attendance') }}" class="btn btn-primary me-2">
+            📝 Attendance Panel
+        </a>
+
+        <a href="{{ url_for('admin_attendance_records') }}" class="btn btn-success me-2">
+            📄 Attendance Records
+        </a>
+
+        <a href="{{ url_for('export_attendance_excel') }}" class="btn btn-info me-2">
+            📤 Export Attendance (Excel)
+        </a>
+
+        <a href="{{ url_for('admin_support') }}" class="btn btn-warning">
+            💬 Support
+            {% if unread_count > 0 %}
+            <span class="badge bg-danger">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+
+    </div>
+
+    <!-- ========================= QR ATTENDANCE ========================= -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body">
+
+            <h4 class="fw-bold text-success mb-3">📷 QR Attendance (2 Minutes)</h4>
+
+            <form id="qrForm">
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-4">
+                        <label class="fw-bold">Select Subject</label>
+                        <select id="subject_id" class="form-select" required>
+                            <option value="">Select Subject</option>
+                            {% for s in subjects %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary" onclick="generateQR()">
+                            Generate QR
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- QR RESULT -->
+            <div class="mt-4 text-center">
+
+                <img id="qrImage" style="display:none;" width="220" class="border p-2 rounded bg-white">
+
+                <h5 id="qrTimer" class="fw-bold text-danger mt-3"></h5>
+
+                <div id="qrTokenBox" class="mt-2" style="display:none;">
+                    <b>Token:</b>
+                    <span id="qrToken" class="text-primary fw-bold">----</span>
+
+                    <button id="toggleBtn" class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleToken()">
+                        Hide
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+    let timeLeft = 120;
+    let timer;
+    let tokenVisible = true;
+
+    function generateQR() {
+        const subjectId = document.getElementById("subject_id").value;
+
+        if (!subjectId) {
+            alert("Please select subject");
+            return;
+        }
+
+        fetch(`/admin/generate-qr/${subjectId}`)
+            .then(res => res.json())
+            .then(data => {
+
+                // Show QR
+                document.getElementById("qrImage").src =
+                    "data:image/png;base64," + data.qr;
+                document.getElementById("qrImage").style.display = "block";
+
+                // Show token
+                document.getElementById("qrToken").innerText = data.display_token;
+                document.getElementById("qrTokenBox").style.display = "block";
+                document.getElementById("toggleBtn").innerText = "Hide";
+                tokenVisible = true;
+
+                // Start timer
+                clearInterval(timer);
+                timeLeft = 120;
+                startTimer();
+            });
+    }
+
+    function startTimer() {
+        updateTimer();
+
+        timer = setInterval(() => {
+            timeLeft--;
+            updateTimer();
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById("qrTimer").innerText = "QR Expired ❌";
+                document.getElementById("qrImage").style.display = "none";
+                document.getElementById("qrTokenBox").style.display = "none";
+            }
+        }, 1000);
+    }
+
+    function updateTimer() {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+
+        document.getElementById("qrTimer").innerText =
+            `Valid for ${m}:${s < 10 ? '0' + s : s}`;
+    }
+
+    function toggleToken() {
+        const tokenSpan = document.getElementById("qrToken");
+        const btn = document.getElementById("toggleBtn");
+
+        if (tokenVisible) {
+            tokenSpan.innerText = "****";
+            btn.innerText = "Show";
+        } else {
+            tokenSpan.innerText = tokenSpan.getAttribute("data-token") || tokenSpan.innerText;
+            btn.innerText = "Hide";
+        }
+
+        tokenVisible = !tokenVisible;
+    }
+</script>
+
+
+    <!-- ========================= SUMMARY CARDS ========================= -->
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 text-center p-3">
+                <h5 class="text-secondary">Total Leaves</h5>
+                <h2 class="fw-bold text-dark">{{ stats.total or 0 }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 text-center p-3">
+                <h5 class="text-success">Approved</h5>
+                <h2 class="fw-bold text-success">{{ stats.approved or 0 }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 text-center p-3">
+                <h5 class="text-warning">Pending</h5>
+                <h2 class="fw-bold text-warning">{{ stats.pending or 0 }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-lg border-0 text-center p-3">
+                <h5 class="text-danger">Rejected</h5>
+                <h2 class="fw-bold text-danger">{{ stats.rejected or 0 }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================= LEAVE TABLE ========================= -->
+    <div class="card shadow-lg border-0 mb-5">
+        <div class="card-body">
+            <h4 class="fw-bold text-primary mb-3">Leave Applications</h4>
+
+            {% if leaves %}
+            <table class="table table-bordered table-striped" style="font-size: 18px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Student</th>
+                        <th>Semester</th>
+                        <th>Department</th>
+                        <th>Roll No</th>
+                        <th>Registration No</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Decision</th>
+                        <th>Action</th>
+                        <th>Medical</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for l in leaves %}
+                    <tr>
+                        <td>{{ l.name }}</td>
+                        <td>{{ l.semester }}</td>
+                        <td>{{ l.department }}</td>
+                        <td>{{ l.roll_no }}</td>
+                        <td>{{ l.registration_no }}</td>
+                        <td>{{ l.from_date }}</td>
+                        <td>{{ l.to_date }}</td>
+                        <td>{{ l.reason }}</td>
+
+                        {% if l.status == "Approved" %}
+                        <td class="text-success fw-bold">{{ l.status }}</td>
+                        {% elif l.status == "Rejected" %}
+                        <td class="text-danger fw-bold">{{ l.status }}</td>
+                        {% else %}
+                        <td class="text-warning fw-bold">{{ l.status }}</td>
+                        {% endif %}
+
+                        <td>{{ l.decision_reason or "-" }}</td>
+
+                        <td>
+                            {% if l.status == "Pending" %}
+                            <form method="POST" action="{{ url_for('admin_update_leave', lid=l.id) }}">
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="Approved">Approve</option>
+                                    <option value="Rejected">Reject</option>
+                                </select>
+                                <input type="text" name="decision_reason" class="form-control mt-1"
+                                    placeholder="Reason">
+                                <button class="btn btn-primary btn-sm mt-1 w-100">
+                                    Update
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">Done</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            {% if l.medical_file %}
+                            <a href="{{ url_for('static', filename='medical/' ~ l.medical_file) }}" target="_blank"
+                                class="btn btn-sm btn-info">
+                                View
+                            </a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No leave applications found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
