@@ -9,3 +9,4 @@ qrcode
 pillow
 gunicorn
 beautifulsoup4
+PyMuPDF
