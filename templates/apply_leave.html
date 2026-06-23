@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  /* ================= BACKGROUND ================= */
+
+  body {
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+      url("/static/bg.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    animation: zoomBg 18s infinite alternate;
+  }
+
+  @keyframes zoomBg {
+    0% {
+      background-size: 100%;
+    }
+
+    100% {
+      background-size: 110%;
+    }
+  }
+
+  /* ================= MAIN CARD ================= */
+
+  .leave-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 28px;
+
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35);
+
+    padding: 35px;
+    margin-top: 40px;
+  }
+
+  /* ================= TITLE ================= */
+
+  .leave-title {
+    font-size: 38px;
+    font-weight: 800;
+
+    background: linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    margin-bottom: 30px;
+  }
+
+  /* ================= LABEL ================= */
+
+  .form-label {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  /* ================= INPUT ================= */
+
+  .form-control {
+    height: 55px;
+
+    border-radius: 14px !important;
+
+    border: none !important;
+
+    background: rgba(255, 255, 255, 0.92) !important;
+
+    font-size: 15px;
+
+    box-shadow: none !important;
+  }
+
+  textarea.form-control {
+    height: 130px !important;
+    resize: none;
+  }
+
+  /* ================= INPUT FOCUS ================= */
+
+  .form-control:focus {
+    border: 2px solid #00bfff !important;
+
+    box-shadow:
+      0 0 15px rgba(0, 191, 255, 0.5) !important;
+  }
+
+  /* ================= MEDICAL BOX ================= */
+
+  #medicalBox {
+    background: rgba(255, 0, 0, 0.08);
+
+    border: 1px solid rgba(255, 0, 0, 0.25);
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+
+  /* ================= BUTTON ================= */
+
+  .apply-btn {
+    width: 100%;
+
+    height: 58px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    color: white;
+
+    background: linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+    transition: 0.3s;
+  }
+
+  .apply-btn:hover {
+    transform: translateY(-2px) scale(1.01);
+
+    box-shadow:
+      0 10px 25px rgba(0, 119, 255, 0.4);
+  }
+
+  /* ================= RESPONSIVE ================= */
+
+  @media(max-width:768px) {
+
+    .leave-title {
+      font-size: 28px;
+    }
+
+    .leave-card {
+      padding: 22px;
+    }
+
+  }
+</style>
+
+<div class="container py-5">
+
+  <div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+      <div class="leave-card">
+
+        <h2 class="leave-title text-center">
+          📝 Apply Leave
+        </h2>
+
+        <form method="POST" enctype="multipart/form-data">
+
+          <!-- FROM DATE -->
+          <div class="mb-4">
+            <label class="form-label">
+              From Date
+            </label>
+
+            <input type="date" name="from_date" id="from_date" class="form-control" required>
+          </div>
+
+          <!-- TO DATE -->
+          <div class="mb-4">
+            <label class="form-label">
+              To Date
+            </label>
+
+            <input type="date" name="to_date" id="to_date" class="form-control" required>
+          </div>
+
+          <!-- REASON -->
+          <div class="mb-4">
+            <label class="form-label">
+              Reason
+            </label>
+
+            <textarea name="reason" class="form-control" placeholder="Write your leave reason..." required></textarea>
+          </div>
+
+          <!-- MEDICAL -->
+          <div class="mb-4" id="medicalBox" style="display:none;">
+
+            <label class="fw-bold text-danger mb-3">
+              🏥 Medical Certificate Required
+              (15 days or more)
+            </label>
+
+            <input type="file" name="medical_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+          </div>
+
+          <!-- BUTTON -->
+          <button class="apply-btn">
+            ✅ Submit Leave Application
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+  function checkDays() {
+
+    let from = document.getElementById("from_date").value;
+    let to = document.getElementById("to_date").value;
+
+    if (!from || !to) return;
+
+    let d1 = new Date(from);
+    let d2 = new Date(to);
+
+    let days = Math.floor((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+
+    if (days >= 15) {
+
+      document.getElementById("medicalBox").style.display = "block";
+
+    } else {
+
+      document.getElementById("medicalBox").style.display = "none";
+
+    }
+  }
+
+  document.getElementById("from_date")
+    .addEventListener("change", checkDays);
+
+  document.getElementById("to_date")
+    .addEventListener("change", checkDays);
+
+</script>
+
+{% endblock %}

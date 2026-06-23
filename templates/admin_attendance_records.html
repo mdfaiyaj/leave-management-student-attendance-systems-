@@ -1,0 +1,467 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= MAIN CARD ================= */
+
+    .attendance-card {
+
+        background: rgba(255, 255, 255, 0.10);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        border-radius: 28px;
+
+        padding: 35px;
+
+        margin-top: 30px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ================= TITLE ================= */
+
+    .page-title {
+
+        font-size: 38px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 35px;
+    }
+
+    /* ================= LABEL ================= */
+
+    label {
+
+        color: white;
+
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+    /* ================= INPUT ================= */
+
+    .form-control,
+    .form-select {
+
+        height: 52px;
+
+        border-radius: 14px !important;
+
+        border: none !important;
+
+        background: rgba(255, 255, 255, 0.92) !important;
+
+        box-shadow: none !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+
+        border: 2px solid #00bfff !important;
+
+        box-shadow:
+            0 0 15px rgba(0, 191, 255, 0.5) !important;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .custom-btn {
+
+        border: none;
+
+        border-radius: 14px;
+
+        padding: 12px 28px;
+
+        font-weight: 700;
+
+        color: white;
+
+        transition: 0.3s;
+    }
+
+    .download-btn {
+
+        background:
+            linear-gradient(90deg, #007bff, #0056d6);
+    }
+
+    .download-all-btn {
+
+        background:
+            linear-gradient(90deg, #00b894, #00cec9);
+    }
+
+    .custom-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 22px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-wrapper {
+
+        overflow-x: auto;
+
+        margin-top: 25px;
+    }
+
+    .custom-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        backdrop-filter: blur(12px);
+    }
+
+    /* TABLE HEAD */
+
+    .custom-table thead {
+
+        background:
+            linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+        color: white;
+    }
+
+    .custom-table th {
+
+        padding: 16px;
+
+        text-align: center;
+
+        font-size: 15px;
+
+        white-space: nowrap;
+    }
+
+    /* TABLE BODY */
+
+    .custom-table td {
+
+        padding: 15px;
+
+        text-align: center;
+
+        color: white;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* HOVER */
+
+    .custom-table tbody tr:hover {
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        transition: 0.3s;
+    }
+
+    /* PERCENTAGE */
+
+    .success-per {
+
+        color: #00ff99;
+
+        font-weight: 700;
+    }
+
+    .danger-per {
+
+        color: #ff5c5c;
+
+        font-weight: 700;
+    }
+
+    /* NO RECORD */
+
+    .no-record {
+
+        color: #ddd;
+
+        font-size: 18px;
+
+        text-align: center;
+
+        margin-top: 30px;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:768px) {
+
+        .attendance-card {
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+    }
+</style>
+
+<div class="container">
+
+    <div class="attendance-card">
+
+        <!-- TITLE -->
+        <h2 class="page-title">
+            📊 Attendance Records
+        </h2>
+
+        <!-- ================= FILTER ================= -->
+
+        <form method="GET" class="row g-4 mb-4">
+
+            {% if admin_branch == "CSE" %}
+
+            <div class="col-md-3">
+
+                <label>CSE Branch</label>
+
+                <select name="sub_branch" class="form-select" onchange="this.form.submit()">
+
+                    <option value="">Select</option>
+
+                    <option value="CSE (Network)" {% if sub_branch=="CSE (Network)" %}selected{% endif %}>
+
+                        CSE (Network)
+
+                    </option>
+
+                    <option value="CSE (Cyber Security)" {% if sub_branch=="CSE (Cyber Security)" %}selected{% endif %}>
+
+                        CSE (Cyber Security)
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            {% endif %}
+
+            <!-- SEMESTER -->
+
+            <div class="col-md-2">
+
+                <label>Semester</label>
+
+                <select name="semester" class="form-select" onchange="this.form.submit()">
+
+                    <option value="">Select</option>
+
+                    {% for i in range(1,9) %}
+
+                    <option value="{{ i }}" {% if semester==i|string %}selected{% endif %}>
+
+                        Semester {{ i }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- SUBJECT -->
+
+            <div class="col-md-3">
+
+                <label>Subject</label>
+
+                <select name="subject_id" class="form-select" onchange="this.form.submit()">
+
+                    <option value="">All Subjects</option>
+
+                    {% for s in subjects %}
+
+                    <option value="{{ s.id }}" {% if subject_id==s.id|string %}selected{% endif %}>
+
+                        {{ s.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- DATE -->
+
+            <div class="col-md-3">
+
+                <label>Date</label>
+
+                <input type="date" name="date" class="form-control" value="{{ date }}" onchange="this.form.submit()">
+
+            </div>
+
+        </form>
+
+        <!-- ================= DOWNLOAD BUTTONS ================= -->
+
+        <div class="d-flex flex-wrap gap-3 mb-4">
+
+            <!-- DOWNLOAD DATE -->
+
+            <form method="GET" action="{{ url_for('export_attendance_excel') }}">
+
+                <input type="hidden" name="sub_branch" value="{{ sub_branch }}">
+                <input type="hidden" name="semester" value="{{ semester }}">
+                <input type="hidden" name="subject_id" value="{{ subject_id }}">
+                <input type="hidden" name="date" value="{{ date }}">
+
+                <button type="submit" class="custom-btn download-btn" {% if not date %}disabled{% endif %}>
+
+                    ⬇ Download Selected Date
+
+                </button>
+
+            </form>
+
+            <!-- DOWNLOAD ALL -->
+
+            <form method="GET" action="{{ url_for('export_attendance_excel') }}">
+
+                <input type="hidden" name="sub_branch" value="{{ sub_branch }}">
+                <input type="hidden" name="semester" value="{{ semester }}">
+                <input type="hidden" name="subject_id" value="{{ subject_id }}">
+                <input type="hidden" name="all_dates" value="1">
+
+                <button type="submit" class="custom-btn download-all-btn">
+
+                    📁 Download All Dates
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- ================= TABLE ================= -->
+
+        {% if records %}
+
+        <div class="table-wrapper">
+
+            <table class="custom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Name</th>
+                        <th>Roll</th>
+                        <th>Reg No</th>
+                        <th>Subject</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Attendance %</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for r in records %}
+
+                    <tr>
+
+                        <td>{{ r.name }}</td>
+
+                        <td>{{ r.roll_no }}</td>
+
+                        <td>{{ r.registration_no }}</td>
+
+                        <td>{{ r.subject }}</td>
+
+                        <td>{{ r.date }}</td>
+
+                        <td>{{ r.status }}</td>
+
+                        <td class="{% if r['percentage'] >= 75 %}success-per{% else %}danger-per{% endif %}">
+
+                            {{ r['percentage'] }}%
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="no-record">
+
+            🚫 No attendance records found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

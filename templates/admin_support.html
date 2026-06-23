@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= MAIN CARD ================= */
+
+    .support-card {
+
+        max-width: 1050px;
+
+        margin: 35px auto;
+
+        background: rgba(255, 255, 255, 0.10);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        border-radius: 28px;
+
+        padding: 35px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ================= TITLE ================= */
+
+    .page-title {
+
+        font-size: 38px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 30px;
+    }
+
+    /* ================= STUDENT LIST ================= */
+
+    .student-list {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 16px;
+    }
+
+    /* ================= STUDENT ITEM ================= */
+
+    .student-item {
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        border-radius: 22px;
+
+        padding: 18px 22px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        text-decoration: none;
+
+        transition: 0.3s;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* HOVER */
+
+    .student-item:hover {
+
+        transform: translateY(-2px);
+
+        background:
+            rgba(255, 255, 255, 0.14);
+
+        box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ================= LEFT INFO ================= */
+
+    .student-info h5 {
+
+        margin: 0;
+
+        color: white;
+
+        font-size: 20px;
+
+        font-weight: 700;
+    }
+
+    .student-info small {
+
+        color: #ddd;
+
+        font-size: 13px;
+    }
+
+    /* ================= RIGHT SIDE ================= */
+
+    .right-box {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+    }
+
+    /* CHAT BUTTON */
+
+    .chat-btn {
+
+        background:
+            linear-gradient(135deg, #00b4ff, #0066ff, #7f5cff);
+
+        color: white;
+
+        border: none;
+
+        padding: 10px 18px;
+
+        border-radius: 14px;
+
+        font-size: 14px;
+
+        font-weight: 700;
+
+        transition: 0.3s;
+    }
+
+    .chat-btn:hover {
+
+        transform: scale(1.05);
+    }
+
+    /* UNREAD BADGE */
+
+    .unread-badge {
+
+        min-width: 32px;
+
+        height: 32px;
+
+        border-radius: 50%;
+
+        background: #ff3b3b;
+
+        color: white;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        box-shadow:
+            0 5px 15px rgba(255, 0, 0, 0.4);
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-box {
+
+        text-align: center;
+
+        padding: 80px 20px;
+
+        color: #ddd;
+
+        font-size: 22px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px) {
+
+        .support-card {
+            margin: 15px;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+        .student-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .right-box {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+    }
+</style>
+
+<div class="container">
+
+    <div class="support-card">
+
+        <!-- TITLE -->
+
+        <h2 class="page-title">
+            💬 Student Support Panel
+        </h2>
+
+        <!-- STUDENT LIST -->
+
+        {% if students %}
+
+        <div class="student-list">
+
+            {% for s in students %}
+
+            <a href="{{ url_for('admin_support_chat', student_id=s.id) }}" class="student-item">
+
+                <!-- LEFT -->
+
+                <div class="student-info">
+
+                    <h5>
+
+                        👨‍🎓 {{ s.name }}
+
+                    </h5>
+
+                    <small>
+
+                        Semester {{ s.semester }}
+                        |
+                        Reg {{ s.registration_no }}
+
+                    </small>
+
+                </div>
+
+                <!-- RIGHT -->
+
+                <div class="right-box">
+
+                    {% if s.unread > 0 %}
+
+                    <div class="unread-badge">
+
+                        {{ s.unread }}
+
+                    </div>
+
+                    {% endif %}
+
+                    <div class="chat-btn">
+
+                        Open Chat ➜
+
+                    </div>
+
+                </div>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-box">
+
+            🚫 No students found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

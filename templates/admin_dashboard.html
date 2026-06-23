@@ -1,0 +1,802 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- ================= SELECT2 ================= -->
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    body {
+
+        background:
+            linear-gradient(rgba(0, 0, 0, .65),
+                rgba(0, 0, 0, .65)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 15s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    .page-title {
+
+        font-size: 42px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(90deg,
+                #00c6ff,
+                #0072ff,
+                #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 25px;
+    }
+
+    .glass-card {
+
+        background:
+            rgba(255, 255, 255, .08);
+
+        backdrop-filter: blur(18px);
+
+        border:
+            1px solid rgba(255, 255, 255, .12);
+
+        border-radius: 28px;
+
+        padding: 28px;
+
+        margin-bottom: 28px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, .35);
+    }
+
+    .top-btn {
+
+        border: none;
+
+        padding: 14px 22px;
+
+        border-radius: 16px;
+
+        color: white;
+
+        font-weight: 700;
+
+        text-decoration: none;
+
+        display: inline-block;
+
+        margin: 5px;
+
+        transition: .3s;
+    }
+
+    .top-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 10px 25px rgba(0, 0, 0, .25);
+
+        color: white;
+    }
+
+    .btn-blue {
+        background:
+            linear-gradient(90deg,
+                #00b4ff,
+                #0066ff);
+    }
+
+    .btn-green {
+        background:
+            linear-gradient(90deg,
+                #00b894,
+                #00cec9);
+    }
+
+    .btn-red {
+        background:
+            linear-gradient(90deg,
+                #ff416c,
+                #ff4b2b);
+    }
+
+    .btn-dark2 {
+        background:
+            linear-gradient(90deg,
+                #232526,
+                #414345);
+    }
+
+    .btn-yellow {
+        background:
+            linear-gradient(90deg,
+                #f7971e,
+                #ffd200);
+
+        color: #222;
+    }
+
+    .btn-info2 {
+        background:
+            linear-gradient(90deg,
+                #36d1dc,
+                #5b86e5);
+    }
+
+    .form-control,
+    .form-select {
+
+        height: 56px;
+
+        border-radius: 16px !important;
+
+        border: none !important;
+
+        background:
+            rgba(255, 255, 255, .92) !important;
+    }
+
+    label {
+
+        color: white;
+
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+    .stats-card {
+
+        border-radius: 24px;
+
+        padding: 24px;
+
+        text-align: center;
+
+        color: white;
+
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, .25);
+    }
+
+    .stats-card h2 {
+
+        font-size: 42px;
+
+        font-weight: 800;
+    }
+
+    .bg1 {
+        background:
+            linear-gradient(135deg,
+                #434343,
+                #000000);
+    }
+
+    .bg2 {
+        background:
+            linear-gradient(135deg,
+                #00b894,
+                #00cec9);
+    }
+
+    .bg3 {
+        background:
+            linear-gradient(135deg,
+                #f7971e,
+                #ffd200);
+    }
+
+    .bg4 {
+        background:
+            linear-gradient(135deg,
+                #ff416c,
+                #ff4b2b);
+    }
+
+    .custom-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+    }
+
+    .custom-table thead {
+
+        background:
+            linear-gradient(90deg,
+                #00b4ff,
+                #0066ff,
+                #7f5cff);
+
+        color: white;
+    }
+
+    .custom-table th,
+    .custom-table td {
+
+        padding: 14px;
+
+        text-align: center;
+    }
+
+    .custom-table td {
+
+        color: white;
+
+        border-top:
+            1px solid rgba(255, 255, 255, .08);
+    }
+
+    .custom-table tbody tr:hover {
+
+        background:
+            rgba(255, 255, 255, .05);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    #qrImage {
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, .35);
+    }
+
+    .select2-container--default .select2-selection--single {
+
+        height: 56px !important;
+
+        border-radius: 16px !important;
+
+        padding-top: 12px;
+
+        border: none !important;
+    }
+
+    .select2-selection__rendered {
+        color: #222 !important;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <h2 class="page-title">
+        🛠 Admin Dashboard
+    </h2>
+
+    <!-- ================= TOP BUTTONS ================= -->
+
+    <div class="glass-card">
+
+        <a href="/admin/users" class="top-btn btn-dark2">
+            📘 Explore Students
+        </a>
+
+        <a href="/admin/attendance" class="top-btn btn-blue">
+            📝 Attendance Panel
+        </a>
+
+        <a href="/admin/attendance-records" class="top-btn btn-green">
+            📄 Attendance Records
+        </a>
+
+        <a href="/admin/export/attendance/excel" class="top-btn btn-info2">
+            📤 Export Attendance
+        </a>
+
+        <a href="/admin/upload-students" class="top-btn btn-dark2">
+            📤 Upload Students
+        </a>
+
+        <a href="{{ url_for('semester_control') }}" class="top-btn btn-red">
+            🎓 Semester Control
+        </a>
+        <a href="/admin/support" class="top-btn btn-yellow">
+            💬 Support
+        </a>
+
+        <a href="/tools" class="top-btn btn-blue">
+            🛠 PDF & Image Tools
+        </a>
+
+    </div>
+
+    <!-- ================= QR SECTION ================= -->
+
+    <div class="glass-card">
+
+        <h3 class="fw-bold text-success mb-4">
+            📷 QR Attendance System
+        </h3>
+
+        <div class="row g-4 align-items-end">
+
+            <div class="col-md-5">
+
+                <label>
+                    Select Subject
+                </label>
+
+                <select id="subject_id" class="form-select" required>
+
+                    <option value="">
+                        Search Subject
+                    </option>
+
+                    {% for s in subjects %}
+
+                    <option value="{{ s.id }}">
+                        {{ s.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <button type="button" class="top-btn btn-blue w-100" onclick="startQRLoop()">
+
+                    🚀 Start QR
+
+                </button>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <button type="button" class="top-btn btn-green w-100" onclick="openFullscreenQR()">
+
+                    ⛶ Full Screen
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- QR RESULT -->
+
+        <div class="text-center mt-5">
+
+            <img id="qrImage" style="display:none;" width="240" class="bg-white p-3 rounded">
+
+            <h2 id="tokenText" class="text-info mt-4">
+            </h2>
+
+            <h3 id="timerText" class="text-warning fw-bold mt-3">
+            </h3>
+
+        </div>
+
+    </div>
+
+    <!-- ================= STATS ================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3 mb-3">
+
+            <div class="stats-card bg1">
+
+                <h5>Total Leaves</h5>
+
+                <h2>{{ stats.total or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="stats-card bg2">
+
+                <h5>Approved</h5>
+
+                <h2>{{ stats.approved or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="stats-card bg3">
+
+                <h5>Pending</h5>
+
+                <h2>{{ stats.pending or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="stats-card bg4">
+
+                <h5>Rejected</h5>
+
+                <h2>{{ stats.rejected or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= FULLSCREEN QR ================= -->
+
+<div id="qrFullscreen" style="
+     display:none;
+     position:fixed;
+     inset:0;
+     background:#000;
+     z-index:9999;
+     text-align:center;">
+
+    <div style="
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+    ">
+
+        <img id="qrImageFull" width="420" class="bg-white p-3 rounded">
+
+        <h2 id="qrTokenFull" class="mt-4 text-warning">
+        </h2>
+
+        <button class="top-btn btn-red mt-4" onclick="closeFullscreenQR()">
+
+            Close
+
+        </button>
+
+    </div>
+
+</div>
+<!-- ================= LEAVE SECTION ================= -->
+
+<div class="glass-card">
+
+    <h3 class="fw-bold text-info mb-4">
+        📄 Leave Applications
+    </h3>
+
+    {% if leaves %}
+
+    <div class="table-wrapper">
+
+        <table class="custom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Reason</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Status</th>
+                    <th>Medical</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for l in leaves %}
+
+                <tr>
+
+                    <td>
+                        {{ l.name }}
+                    </td>
+
+                    <td>
+                        {{ l.department }}
+                    </td>
+
+                    <td>
+                        {{ l.semester }}
+                    </td>
+
+                    <td>
+                        {{ l.reason }}
+                    </td>
+
+                    <td>
+                        {{ l.from_date }}
+                    </td>
+
+                    <td>
+                        {{ l.to_date }}
+                    </td>
+
+                    <td>
+
+                        {% if l.status == "Approved" %}
+
+                        <span class="badge bg-success">
+                            Approved
+                        </span>
+
+                        {% elif l.status == "Rejected" %}
+
+                        <span class="badge bg-danger">
+                            Rejected
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if l.medical_file %}
+
+                        <a href="/static/medical/{{ l.medical_file }}" target="_blank" class="top-btn btn-blue">
+
+                            View
+
+                        </a>
+
+                        {% else %}
+
+                        <span class="text-light">
+                            No File
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <form method="POST" action="{{ url_for('admin_update_leave', lid=l.id) }}">
+
+                            <select name="status" class="form-select mb-2">
+
+                                <option value="Approved">
+                                    Approve
+                                </option>
+
+                                <option value="Rejected">
+                                    Reject
+                                </option>
+
+                            </select>
+
+                            <button type="submit" class="top-btn btn-green w-100">
+
+                                Update
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center text-light">
+
+        <h5>
+            No Leave Applications Found
+        </h5>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#subject_id').select2({
+
+            placeholder: "Search Subject",
+
+            width: '100%'
+
+        });
+
+    });
+
+    let qrInterval;
+    let countdownInterval;
+
+
+    // ================= START LOOP =================
+
+    function startQRLoop() {
+
+        generateQR();
+
+        clearInterval(qrInterval);
+
+        qrInterval = setInterval(() => {
+
+            generateQR();
+
+        }, 5000);
+    }
+
+
+    // ================= GENERATE QR =================
+
+    async function generateQR() {
+
+        let subject =
+            document.getElementById(
+                "subject_id"
+            ).value;
+
+        if (subject == "") {
+
+            alert("Select Subject First");
+
+            return;
+        }
+
+        const response =
+            await fetch("/generate-qr", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    subject_id: subject
+
+                })
+
+            });
+
+        const data =
+            await response.json();
+
+        document.getElementById(
+            "qrImage"
+        ).src =
+            data.qr + "?" + new Date().getTime();
+
+        document.getElementById(
+            "qrImage"
+        ).style.display = "block";
+
+        document.getElementById(
+            "qrImageFull"
+        ).src = data.qr;
+
+        document.getElementById(
+            "tokenText"
+        ).innerHTML =
+            "TOKEN : " + data.token;
+
+        document.getElementById(
+            "qrTokenFull"
+        ).innerHTML =
+            "TOKEN : " + data.token;
+
+
+        // ================= TIMER =================
+
+        let timeLeft = 120;
+
+        clearInterval(countdownInterval);
+
+        countdownInterval = setInterval(() => {
+
+            let min =
+                Math.floor(timeLeft / 60);
+
+            let sec =
+                timeLeft % 60;
+
+            document.getElementById(
+                "timerText"
+            ).innerHTML =
+
+                "Expires In : "
+                + min + ":"
+                + (sec < 10 ? "0" + sec : sec);
+
+            timeLeft--;
+
+            if (timeLeft < 0) {
+
+                clearInterval(
+                    countdownInterval
+                );
+            }
+
+        }, 1000);
+
+    }
+
+
+    // ================= FULLSCREEN =================
+
+    function openFullscreenQR() {
+
+        document.getElementById(
+            "qrFullscreen"
+        ).style.display = "block";
+    }
+
+    function closeFullscreenQR() {
+
+        document.getElementById(
+            "qrFullscreen"
+        ).style.display = "none";
+    }
+
+</script>
+
+{% endblock %}

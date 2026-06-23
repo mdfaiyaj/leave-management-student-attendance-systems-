@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Leave Management System</title>
+
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- SWEET ALERT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.65),
+                    rgba(0, 0, 0, 0.65)),
+
+                url("/static/bg.jpg");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-repeat: no-repeat;
+
+            background-attachment: fixed;
+
+            animation: zoomBg 18s infinite alternate;
+        }
+
+        @keyframes zoomBg {
+
+            0% {
+                background-size: 100%;
+            }
+
+            100% {
+                background-size: 110%;
+            }
+        }
+
+        .login-card {
+
+            width: 100%;
+
+            max-width: 430px;
+
+            padding: 38px;
+
+            border-radius: 30px;
+
+            background: rgba(255, 255, 255, 0.10);
+
+            backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        .login-icon {
+
+            width: 110px;
+
+            height: 110px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(135deg,
+                    #00b4ff,
+                    #0066ff,
+                    #7f5cff);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 52px;
+
+            color: white;
+
+            margin-bottom: 25px;
+        }
+
+        .login-title {
+
+            font-size: 38px;
+
+            font-weight: 800;
+
+            text-align: center;
+
+            margin-bottom: 30px;
+
+            background:
+                linear-gradient(90deg,
+                    #00c6ff,
+                    #0072ff,
+                    #7f5cff);
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+        label {
+
+            color: white;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+
+            height: 56px;
+
+            border-radius: 16px !important;
+
+            border: none !important;
+
+            background:
+                rgba(255, 255, 255, 0.92) !important;
+
+            font-size: 16px;
+        }
+
+        .btn-custom {
+
+            width: 100%;
+
+            height: 56px;
+
+            border: none;
+
+            border-radius: 16px;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: white;
+
+            transition: 0.3s;
+        }
+
+        .btn-custom:hover {
+
+            transform: translateY(-2px);
+        }
+
+        .btn-login {
+            background:
+                linear-gradient(90deg,
+                    #00b4ff,
+                    #0066ff,
+                    #7f5cff);
+        }
+
+        .btn-student {
+            background:
+                linear-gradient(90deg,
+                    #00b894,
+                    #00cec9);
+        }
+
+        .btn-admin {
+            background:
+                linear-gradient(90deg,
+                    #f7971e,
+                    #ffd200);
+
+            color: #222;
+        }
+
+        .btn-dev {
+            background:
+                linear-gradient(90deg,
+                    #232526,
+                    #414345);
+        }
+
+        .btn-normal {
+            background:
+                linear-gradient(90deg,
+                    #6c757d,
+                    #495057);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .forgot-link {
+
+            color: #00c6ff;
+
+            font-weight: 600;
+        }
+
+        .forgot-link:hover {
+            color: white;
+        }
+
+        .alert {
+
+            border-radius: 14px;
+
+            font-weight: 600;
+        }
+
+        hr {
+
+            border-color:
+                rgba(255, 255, 255, 0.15);
+
+            margin: 25px 0;
+        }
+
+        .small-text {
+
+            color: white;
+
+            text-align: center;
+
+            margin-bottom: 15px;
+        }
+
+        @media(max-width:768px) {
+
+            .login-card {
+
+                padding: 25px;
+
+                margin: 15px;
+            }
+
+            .login-title {
+
+                font-size: 30px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container d-flex justify-content-center align-items-center" style="min-height:100vh;">
+
+        <div class="login-card">
+
+            <!-- ICON -->
+
+            <div class="login-icon">
+
+                🔐
+
+            </div>
+
+            <!-- TITLE -->
+
+            {% if developer_mode %}
+
+            <h2 class="login-title">
+
+                Developer Login
+
+            </h2>
+
+            {% else %}
+
+            <h2 class="login-title">
+
+                Login Portal
+
+            </h2>
+
+            {% endif %}
+
+            <!-- FLASH -->
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+            {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }} text-center">
+
+                {{ message }}
+
+            </div>
+
+            {% endfor %}
+
+            {% endif %}
+
+            {% endwith %}
+
+            <!-- FORM -->
+
+            <form action="{{ url_for('login', mode=request.args.get('mode')) }}" method="POST">
+
+                <!-- EMAIL -->
+
+                <div class="mb-4">
+
+                    <label>
+
+                        Email Address
+
+                    </label>
+
+                    <input type="email" name="email" class="form-control" required placeholder="Enter email">
+
+                </div>
+
+                <!-- PASSWORD -->
+
+                <div class="mb-4">
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+                    <input type="password" name="password" class="form-control" required placeholder="Enter password">
+
+                </div>
+
+                <!-- LOGIN BUTTON -->
+
+                <button class="btn-custom btn-login">
+
+                    🚀 Login
+
+                </button>
+
+            </form>
+
+            <!-- FORGOT -->
+
+            {% if not developer_mode %}
+
+            <div class="text-center mt-3">
+
+                <a href="/forgot-password" class="forgot-link">
+
+                    Forgot Password?
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+            {% if not developer_mode %}
+
+            <hr>
+
+            <!-- REGISTER -->
+
+            <div class="small-text">
+
+                Not Registered Yet?
+
+            </div>
+
+            <!-- STUDENT -->
+
+            <a href="/register/student"
+                class="btn-custom btn-student d-flex align-items-center justify-content-center mb-3">
+
+                🎓 Register as Student
+
+            </a>
+
+            <!-- ADMIN -->
+
+            <a href="/register/admin" class="btn-custom btn-admin d-flex align-items-center justify-content-center">
+
+                👨‍💼 Register as Admin
+
+            </a>
+
+            {% endif %}
+
+            <hr>
+
+            <!-- DEV LOGIN -->
+
+            {% if not developer_mode %}
+
+            <a href="/login?mode=developer" class="btn-custom btn-dev d-flex align-items-center justify-content-center">
+
+                💻 Developer Login
+
+            </a>
+
+            {% else %}
+
+            <a href="/login" class="btn-custom btn-normal d-flex align-items-center justify-content-center">
+
+                🔙 Normal Login
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= MAIN CARD ================= */
+
+    .attendance-card {
+
+        background: rgba(255, 255, 255, 0.10);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        border-radius: 28px;
+
+        padding: 35px;
+
+        margin-top: 35px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ================= TITLE ================= */
+
+    .page-title {
+
+        font-size: 38px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 35px;
+    }
+
+    /* ================= LABEL ================= */
+
+    label {
+
+        color: white;
+
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+    /* ================= INPUT ================= */
+
+    .form-control,
+    .form-select {
+
+        height: 52px;
+
+        border-radius: 14px !important;
+
+        border: none !important;
+
+        background: rgba(255, 255, 255, 0.92) !important;
+
+        box-shadow: none !important;
+    }
+
+    /* FOCUS */
+
+    .form-control:focus,
+    .form-select:focus {
+
+        border: 2px solid #00bfff !important;
+
+        box-shadow:
+            0 0 15px rgba(0, 191, 255, 0.5) !important;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .custom-btn {
+
+        border: none;
+
+        border-radius: 14px;
+
+        padding: 12px 28px;
+
+        font-weight: 700;
+
+        color: white;
+
+        transition: 0.3s;
+    }
+
+    .load-btn {
+
+        background:
+            linear-gradient(90deg, #007bff, #0056d6);
+
+        width: 100%;
+
+        height: 52px;
+    }
+
+    .save-btn {
+
+        background:
+            linear-gradient(90deg, #00b894, #00cec9);
+
+        padding: 14px 40px;
+
+        margin-top: 25px;
+    }
+
+    .custom-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 22px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-wrapper {
+
+        overflow-x: auto;
+
+        margin-top: 20px;
+    }
+
+    .custom-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        backdrop-filter: blur(12px);
+    }
+
+    /* TABLE HEAD */
+
+    .custom-table thead {
+
+        background:
+            linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+        color: white;
+    }
+
+    .custom-table th {
+
+        padding: 16px;
+
+        text-align: center;
+
+        font-size: 15px;
+
+        white-space: nowrap;
+    }
+
+    /* TABLE BODY */
+
+    .custom-table td {
+
+        padding: 15px;
+
+        text-align: center;
+
+        color: white;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* HOVER */
+
+    .custom-table tbody tr:hover {
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        transition: 0.3s;
+    }
+
+    /* ================= DATE BOX ================= */
+
+    .date-box {
+
+        max-width: 280px;
+
+        margin-top: 25px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px) {
+
+        .attendance-card {
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+    }
+</style>
+
+<div class="container">
+
+    <div class="attendance-card">
+
+        <!-- TITLE -->
+
+        <h2 class="page-title">
+            📋 Mark Attendance
+        </h2>
+
+        <!-- ================= FILTER FORM ================= -->
+
+        <form method="GET" class="row g-4 mb-4">
+
+            <!-- CSE BRANCH -->
+
+            {% if admin_branch and "CSE" in admin_branch %}
+
+            <div class="col-md-3">
+
+                <label>
+                    CSE Branch
+                </label>
+
+                <select name="sub_branch" class="form-select" required>
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="CSE (Network)" {% if sub_branch=="CSE (Network)" %}selected{% endif %}>
+
+                        CSE (Network)
+
+                    </option>
+
+                    <option value="CSE (Cyber Security)" {% if sub_branch=="CSE (Cyber Security)" %}selected{% endif %}>
+
+                        CSE (Cyber Security)
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            {% endif %}
+
+            <!-- SEMESTER -->
+
+            <div class="col-md-3">
+
+                <label>
+                    Semester
+                </label>
+
+                <select name="semester" class="form-select" required>
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    {% for i in range(1,9) %}
+
+                    <option value="{{ i }}" {% if semester==i %}selected{% endif %}>
+
+                        Semester {{ i }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- LOAD BUTTON -->
+
+            <div class="col-md-2 align-self-end">
+
+                <button class="custom-btn load-btn">
+
+                    🔄 Load
+
+                </button>
+
+            </div>
+
+            <!-- SUBJECT -->
+
+            {% if subjects %}
+
+            <div class="col-md-4">
+
+                <label>
+                    Subject
+                </label>
+
+                <select name="subject_id" class="form-select" onchange="this.form.submit()" required>
+
+                    <option value="">
+                        Select Subject
+                    </option>
+
+                    {% for s in subjects %}
+
+                    <option value="{{ s.id }}" {% if subject_id==s.id %}selected{% endif %}>
+
+                        {{ s.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            {% endif %}
+
+        </form>
+
+        <!-- ================= ATTENDANCE FORM ================= -->
+
+        {% if students %}
+
+        <form method="POST">
+
+            <!-- HIDDEN -->
+
+            <input type="hidden" name="semester" value="{{ semester }}">
+
+            {% if subject_id %}
+            <input type="hidden" name="subject_id" value="{{ subject_id }}">
+            {% endif %}
+
+            {% if sub_branch %}
+            <input type="hidden" name="sub_branch" value="{{ sub_branch }}">
+            {% endif %}
+
+            <!-- DATE -->
+
+            <div class="date-box">
+
+                <label>
+                    Attendance Date
+                </label>
+
+                <input type="date" name="date" class="form-control" required>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="table-wrapper">
+
+                <table class="custom-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Roll</th>
+                            <th>Registration</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for s in students %}
+
+                        <tr>
+
+                            <td>{{ loop.index }}</td>
+
+                            <td>{{ s.name }}</td>
+
+                            <td>{{ s.roll_no }}</td>
+
+                            <td>{{ s.registration_no }}</td>
+
+                            <td>
+
+                                <select name="status_{{ s.id }}" class="form-select" required>
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option value="Present">
+                                        ✅ Present
+                                    </option>
+
+                                    <option value="Absent">
+                                        ❌ Absent
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- SAVE BUTTON -->
+
+            <button class="custom-btn save-btn">
+
+                💾 Save Attendance
+
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

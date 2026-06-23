@@ -1,0 +1,1263 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+    body {
+
+        background:
+            linear-gradient(rgba(0, 0, 0, .65),
+                rgba(0, 0, 0, .65)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    .page-title {
+
+        font-size: 42px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(90deg,
+                #00c6ff,
+                #0072ff,
+                #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 30px;
+    }
+
+    .glass-card {
+
+        background:
+            rgba(255, 255, 255, .10);
+
+        backdrop-filter: blur(18px);
+
+        border:
+            1px solid rgba(255, 255, 255, .15);
+
+        border-radius: 28px;
+
+        padding: 28px;
+
+        margin-bottom: 30px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, .35);
+    }
+
+    .section-title {
+
+        color: white;
+
+        font-size: 32px;
+
+        font-weight: 800;
+    }
+
+    .form-control,
+    .form-select {
+
+        height: 56px;
+
+        border-radius: 16px !important;
+
+        border: none !important;
+
+        background:
+            rgba(255, 255, 255, .92) !important;
+    }
+
+    .custom-btn {
+
+        border: none;
+
+        border-radius: 16px;
+
+        padding: 13px 22px;
+
+        color: white;
+
+        font-weight: 700;
+
+        transition: .3s;
+    }
+
+    .custom-btn:hover {
+
+        transform: translateY(-2px);
+    }
+
+    .btn-blue {
+
+        background:
+            linear-gradient(90deg,
+                #00b4ff,
+                #0066ff);
+    }
+
+    .btn-green {
+
+        background:
+            linear-gradient(90deg,
+                #00b894,
+                #00cec9);
+    }
+
+    .stats-card {
+
+        border-radius: 24px;
+
+        padding: 25px;
+
+        text-align: center;
+
+        color: white;
+    }
+
+    .bg1 {
+
+        background:
+            linear-gradient(135deg,
+                #434343,
+                #000000);
+    }
+
+    .bg2 {
+
+        background:
+            linear-gradient(135deg,
+                #00b894,
+                #00cec9);
+    }
+
+    .bg3 {
+
+        background:
+            linear-gradient(135deg,
+                #f7971e,
+                #ffd200);
+    }
+
+    .bg4 {
+
+        background:
+            linear-gradient(135deg,
+                #ff416c,
+                #ff4b2b);
+    }
+
+    .custom-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+    }
+
+    .custom-table thead {
+
+        background:
+            linear-gradient(90deg,
+                #00b4ff,
+                #0066ff,
+                #7f5cff);
+
+        color: white;
+    }
+
+    .custom-table th,
+    .custom-table td {
+
+        padding: 16px;
+
+        text-align: center;
+
+        font-size: 20px;
+
+        font-weight: 600;
+    }
+
+    .custom-table td {
+
+        color: white;
+
+        border-top:
+            1px solid rgba(255, 255, 255, .08);
+    }
+
+    #reader {
+
+        width: 100%;
+
+        max-width: 500px;
+
+        margin: auto;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        border:
+            3px solid rgba(255, 255, 255, .2);
+    }
+
+    .subject-box {
+
+        border-radius: 20px;
+
+        padding: 22px;
+
+        text-align: center;
+
+        color: white;
+
+        font-weight: 700;
+
+        background:
+            linear-gradient(135deg,
+                #232526,
+                #414345);
+
+        box-shadow:
+            0 8px 20px rgba(0, 0, 0, .25);
+    }
+</style>
+
+<div class="container mt-4">
+
+    <h2 class="page-title">
+
+        🎓 Student Dashboard
+
+    </h2>
+
+    <!-- ================= BEU RESULT ================= -->
+
+    <div class="glass-card">
+
+        <h3 class="section-title">
+
+            🎓 BEU Result
+
+        </h3>
+
+        <form method="POST" action="{{ url_for('student_result') }}">
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <input name="registration_no" class="form-control" placeholder="Registration Number" required>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <select name="semester" class="form-select" required>
+
+                        <option value="">
+                            Semester
+                        </option>
+
+                        {% for i in range(1,9) %}
+
+                        <option value="{{ i }}">
+
+                            Semester {{ i }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <button class="custom-btn btn-blue w-100">
+
+                        🚀 Fetch Result
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- ================= LEAVE STATS ================= -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="stats-card bg1">
+
+                <h5>Total Leaves</h5>
+
+                <h2>{{ stats.total or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="stats-card bg2">
+
+                <h5>Approved</h5>
+
+                <h2>{{ stats.approved or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="stats-card bg3">
+
+                <h5>Pending</h5>
+
+                <h2>{{ stats.pending or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="stats-card bg4">
+
+                <h5>Rejected</h5>
+
+                <h2>{{ stats.rejected or 0 }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= OVERALL ATTENDANCE ================= -->
+
+    <div class="glass-card text-center">
+
+        <h3 class="section-title">
+
+            📊 Overall Attendance Summary
+
+        </h3>
+
+        {% set total = attendance|length %}
+        {% set present = attendance|selectattr("status", "equalto", "Present")|list|length %}
+        {% set absent = total - present %}
+        {% set percent = (present / total * 100) if total > 0 else 0 %}
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <h5 class="text-light">
+
+                    Total Days
+
+                </h5>
+
+                <h2 class="text-white">
+
+                    {{ total }}
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h5 class="text-success">
+
+                    Present
+
+                </h5>
+
+                <h2 class="text-success">
+
+                    {{ present }}
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h5 class="text-danger">
+
+                    Absent
+
+                </h5>
+
+                <h2 class="text-danger">
+
+                    {{ absent }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <hr class="text-light">
+
+        {% if percent >= 75 %}
+
+        <h2 class="fw-bold text-success">
+
+            {{ percent|round(2) }}%
+
+        </h2>
+
+        {% else %}
+
+        <h2 class="fw-bold text-danger">
+
+            {{ percent|round(2) }}%
+
+        </h2>
+
+        <p class="text-danger fw-bold">
+
+            Attendance below required limit!
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- ================= QR ATTENDANCE ================= -->
+
+    <div class="glass-card">
+
+        <h3 class="section-title">
+
+            📷 QR Attendance Scanner
+
+        </h3>
+
+        <button type="button" class="custom-btn btn-blue mb-3" onclick="openScanner()">
+
+            📷 Scan QR Code
+
+        </button>
+
+        <!-- CAMERA -->
+
+        <div id="reader" style="display:none;">
+        </div>
+
+        <!-- TOKEN FORM -->
+
+        <form method="POST" action="{{ url_for('student_submit_token') }}">
+
+            <input type="text" name="token" id="tokenInput" class="form-control mt-4" placeholder="Enter Token"
+                required>
+
+            <button class="custom-btn btn-green mt-3 w-100">
+
+                ✅ Submit Attendance
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ================= SUBJECT WISE ATTENDANCE ================= -->
+
+    <div class="glass-card">
+
+        <h3 class="section-title">
+
+            📚 Subject-wise Attendance
+            (Semester {{ semester }})
+
+        </h3>
+
+        {% if subject_attendance %}
+
+        <div class="table-responsive">
+
+            <table class="custom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Subject</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Total</th>
+                        <th>Attendance %</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for s in subject_attendance %}
+
+                    {% set present = s.present_days or 0 %}
+                    {% set total = s.total_classes or 0 %}
+                    {% set absent = total - present %}
+                    {% set percent = (present / total * 100) if total > 0 else 0 %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ loop.index }}
+
+                        </td>
+
+                        <td class="fw-bold text-info">
+
+                            {{ s.subject }}
+
+                        </td>
+
+                        <td class="fw-bold text-success">
+
+                            {{ present }}
+
+                        </td>
+
+                        <td class="fw-bold text-danger">
+
+                            {{ absent }}
+
+                        </td>
+
+                        <td>
+
+                            {{ total }}
+
+                        </td>
+
+                        {% if percent >= 75 %}
+
+                        <td class="fw-bold text-success">
+
+                            {{ percent|round(1) }}%
+
+                        </td>
+
+                        {% else %}
+
+                        <td class="fw-bold text-danger">
+
+                            {{ percent|round(1) }}%
+
+                        </td>
+
+                        {% endif %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p class="text-light">
+
+            No subject-wise attendance available.
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- ================= DAILY ATTENDANCE ================= -->
+
+    <div class="glass-card">
+
+        <h3 class="section-title">
+
+            📅 Daily Attendance Details
+
+        </h3>
+
+        {% if attendance %}
+
+        <div class="table-responsive">
+
+            <table class="custom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for a in attendance %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ a.date }}
+
+                        </td>
+
+                        {% if a.status == "Present" %}
+
+                        <td class="fw-bold text-success">
+
+                            {{ a.status }}
+
+                        </td>
+
+                        {% else %}
+
+                        <td class="fw-bold text-danger">
+
+                            {{ a.status }}
+
+                        </td>
+
+                        {% endif %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p class="text-light">
+
+            No attendance records found.
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- ================= LEAVE HISTORY ================= -->
+
+    <div class="glass-card">
+
+        <h3 class="section-title">
+
+            📝 Leave Applications
+
+        </h3>
+
+        <a href="{{ url_for('apply_leave') }}" class="custom-btn btn-green text-decoration-none mb-3 d-inline-block">
+
+            ➕ Apply New Leave
+
+        </a>
+
+        {% if leaves %}
+
+        <div class="table-responsive">
+
+            <table class="custom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Reason</th>
+                        <th>Medical</th>
+                        <th>Status</th>
+                        <th>Decision</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for l in leaves %}
+
+                    <tr>
+
+                        <td>{{ l.from_date }}</td>
+
+                        <td>{{ l.to_date }}</td>
+
+                        <td>{{ l.reason }}</td>
+
+                        <td>
+
+                            {% if l.medical_file %}
+
+                            <a href="{{ url_for('static', filename='medical/' ~ l.medical_file) }}" target="_blank"
+                                class="custom-btn btn-blue text-decoration-none">
+
+                                View
+
+                            </a>
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
+                        </td>
+
+                        {% if l.status == "Approved" %}
+
+                        <td class="fw-bold text-success">
+
+                            {{ l.status }}
+
+                        </td>
+
+                        {% elif l.status == "Rejected" %}
+
+                        <td class="fw-bold text-danger">
+
+                            {{ l.status }}
+
+                        </td>
+
+                        {% else %}
+
+                        <td class="fw-bold text-warning">
+
+                            {{ l.status }}
+
+                        </td>
+
+                        {% endif %}
+
+                        <td>
+
+                            {{ l.decision_reason or "-" }}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p class="text-light">
+
+            No leave applications yet.
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+<!-- ================= PDF & IMAGE TOOLS ================= -->
+
+<div class="glass-card">
+
+    <h3 class="section-title">
+
+        🛠 PDF & Image Tools
+
+    </h3>
+
+    <form action="/upload-tool" method="POST" enctype="multipart/form-data">
+
+        <div class="row g-3">
+
+            <!-- FILE -->
+
+            <div class="col-md-4">
+
+                <label class="text-light mb-2">
+
+                    Upload File
+
+                </label>
+
+                <input type="file" name="file" class="form-control" required>
+
+            </div>
+
+            <!-- TOOL -->
+
+            <div class="col-md-4">
+
+                <label class="text-light mb-2">
+
+                    Select Tool
+
+                </label>
+
+                <select name="action" id="toolSelect" class="form-select">
+
+                    <option value="resize_image">
+                        Resize Image
+                    </option>
+
+                    <option value="resize_pdf">
+                        Resize PDF
+                    </option>
+
+                    <option value="pdf_word">
+                        PDF to Word
+                    </option>
+
+                    <option value="pdf_excel">
+                        PDF to Excel
+                    </option>
+
+                    <option value="ocr">
+                        Image to Text OCR
+                    </option>
+
+                    <option value="edit_pdf_text">
+                        Edit PDF Text
+                    </option>
+
+                    <option value="compress_image">
+                        Compress Image
+                    </option>
+
+                    <option value="rotate_image">
+                        Rotate Image
+                    </option>
+
+                    <option value="convert_png">
+                        JPG to PNG
+                    </option>
+
+                    <option value="convert_jpg">
+                        PNG to JPG
+                    </option>
+
+                    <option value="merge_pdf">
+                        Merge PDF
+                    </option>
+
+                    <option value="split_pdf">
+                        Split PDF
+                    </option>
+
+                    <option value="pdf_text_extract">
+                        Extract PDF Text
+                    </option>
+
+                    <option value="pdf_lock">
+                        Lock PDF
+                    </option>
+
+                    <option value="pdf_unlock">
+                        Unlock PDF
+                    </option>
+
+                    <option value="watermark_pdf">
+                        Add Watermark
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div class="col-md-4 d-flex align-items-end">
+
+                <button class="custom-btn btn-blue w-100">
+
+                    🚀 Process File
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- ================= IMAGE SIZE ================= -->
+
+        <div id="resizeBox" class="row mt-4">
+
+            <div class="col-md-6">
+
+                <input type="number" name="width" class="form-control" placeholder="Width">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <input type="number" name="height" class="form-control" placeholder="Height">
+
+            </div>
+
+        </div>
+
+        <!-- ================= PDF TEXT EDIT ================= -->
+
+        <div id="pdfTextBox" class="row mt-4" style="display:none;">
+
+            <div class="col-md-6">
+
+                <input type="text" name="old_text" class="form-control" placeholder="Old Text">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <input type="text" name="new_text" class="form-control" placeholder="New Text">
+
+            </div>
+
+        </div>
+
+        <!-- ================= WATERMARK ================= -->
+
+        <div id="watermarkBox" class="row mt-4" style="display:none;">
+
+            <div class="col-md-12">
+
+                <input type="text" name="watermark" class="form-control" placeholder="Enter Watermark Text">
+
+            </div>
+
+        </div>
+
+        <!-- ================= ROTATE ================= -->
+
+        <div id="rotateBox" class="row mt-4" style="display:none;">
+
+            <div class="col-md-12">
+
+                <select name="rotate_degree" class="form-select">
+
+                    <option value="90">
+                        Rotate 90°
+                    </option>
+
+                    <option value="180">
+                        Rotate 180°
+                    </option>
+
+                    <option value="270">
+                        Rotate 270°
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- ================= PDF PASSWORD ================= -->
+
+        <div id="passwordBox" class="row mt-4" style="display:none;">
+
+            <div class="col-md-12">
+
+                <input type="text" name="pdf_password" class="form-control" placeholder="Enter PDF Password">
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ================= TOOL SCRIPT ================= -->
+
+<script>
+
+    document.getElementById(
+        "toolSelect"
+    ).addEventListener(
+        "change",
+        function () {
+
+            let value = this.value;
+
+            // RESET
+
+            document.getElementById(
+                "resizeBox"
+            ).style.display = "none";
+
+            document.getElementById(
+                "pdfTextBox"
+            ).style.display = "none";
+
+            document.getElementById(
+                "watermarkBox"
+            ).style.display = "none";
+
+            document.getElementById(
+                "rotateBox"
+            ).style.display = "none";
+
+            document.getElementById(
+                "passwordBox"
+            ).style.display = "none";
+
+
+            // IMAGE RESIZE
+
+            if (value == "resize_image") {
+
+                document.getElementById(
+                    "resizeBox"
+                ).style.display = "flex";
+            }
+
+            // PDF TEXT EDIT
+
+            if (value == "edit_pdf_text") {
+
+                document.getElementById(
+                    "pdfTextBox"
+                ).style.display = "flex";
+            }
+
+            // WATERMARK
+
+            if (value == "watermark_pdf") {
+
+                document.getElementById(
+                    "watermarkBox"
+                ).style.display = "flex";
+            }
+
+            // ROTATE IMAGE
+
+            if (value == "rotate_image") {
+
+                document.getElementById(
+                    "rotateBox"
+                ).style.display = "flex";
+            }
+
+            // PASSWORD PDF
+
+            if (
+                value == "pdf_lock" ||
+                value == "pdf_unlock"
+            ) {
+
+                document.getElementById(
+                    "passwordBox"
+                ).style.display = "flex";
+            }
+
+        }
+    );
+
+</script>
+
+<!-- BUTTON -->
+
+<div class="col-md-4">
+
+    <button class="custom-btn btn-blue w-100">
+
+        🚀 Process File
+
+    </button>
+
+</div>
+
+</div>
+
+<!-- IMAGE SIZE -->
+
+<div id="resizeBox" class="row mt-3">
+
+    <div class="col-md-6">
+
+        <input type="number" name="width" class="form-control" placeholder="Width">
+
+    </div>
+
+    <div class="col-md-6">
+
+        <input type="number" name="height" class="form-control" placeholder="Height">
+
+    </div>
+
+</div>
+
+<!-- PDF TEXT EDIT -->
+
+<div id="pdfTextBox" class="row mt-3" style="display:none;">
+
+    <div class="col-md-6">
+
+        <input type="text" name="old_text" class="form-control" placeholder="Old Text">
+
+    </div>
+
+    <div class="col-md-6">
+
+        <input type="text" name="new_text" class="form-control" placeholder="New Text">
+
+    </div>
+
+</div>
+
+</form>
+
+</div>
+<!-- ================= QR SCRIPT ================= -->
+
+<script>
+
+    function openScanner() {
+
+        document.getElementById(
+            "reader"
+        ).style.display = "block";
+
+        const html5QrCode =
+            new Html5Qrcode("reader");
+
+        html5QrCode.start(
+
+            { facingMode: "environment" },
+
+            {
+                fps: 10,
+                qrbox: 250
+            },
+
+            (decodedText) => {
+
+                document.getElementById(
+                    "tokenInput"
+                ).value = decodedText;
+
+                html5QrCode.stop();
+
+                document.getElementById(
+                    "reader"
+                ).style.display = "none";
+            },
+
+            (error) => {
+
+                // ignore
+            }
+
+        );
+    }
+
+</script>
+<script>
+
+    document.getElementById(
+        "toolSelect"
+    ).addEventListener(
+        "change",
+        function () {
+
+            let value = this.value;
+
+            // IMAGE RESIZE
+
+            if (value == "resize_image") {
+
+                document.getElementById(
+                    "resizeBox"
+                ).style.display = "flex";
+
+            } else {
+
+                document.getElementById(
+                    "resizeBox"
+                ).style.display = "none";
+            }
+
+            // PDF TEXT EDIT
+
+            if (value == "edit_pdf_text") {
+
+                document.getElementById(
+                    "pdfTextBox"
+                ).style.display = "flex";
+
+            } else {
+
+                document.getElementById(
+                    "pdfTextBox"
+                ).style.display = "none";
+            }
+
+        }
+    );
+
+</script>
+
+{% endblock %}

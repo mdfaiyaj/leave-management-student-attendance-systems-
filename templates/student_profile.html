@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= PROFILE CARD ================= */
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.12);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        border-radius: 28px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+
+        padding: 35px;
+
+        margin-top: 40px;
+    }
+
+    /* ================= TITLE ================= */
+
+    .profile-title {
+        font-size: 38px;
+        font-weight: 800;
+
+        background: linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 35px;
+    }
+
+    /* ================= PROFILE IMAGE ================= */
+
+    .profile-img {
+        width: 190px;
+        height: 190px;
+
+        object-fit: cover;
+
+        border-radius: 50%;
+
+        border: 5px solid rgba(255, 255, 255, 0.3);
+
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.45);
+
+        transition: 0.4s;
+    }
+
+    .profile-img:hover {
+        transform: scale(1.05);
+    }
+
+    /* ================= INPUT ================= */
+
+    .form-control {
+        height: 52px;
+
+        border-radius: 14px !important;
+
+        border: none !important;
+
+        background: rgba(255, 255, 255, 0.92) !important;
+
+        box-shadow: none !important;
+    }
+
+    .form-control:focus {
+        border: 2px solid #00bfff !important;
+
+        box-shadow:
+            0 0 15px rgba(0, 191, 255, 0.5) !important;
+    }
+
+    /* ================= BUTTON ================= */
+
+    .upload-btn {
+        width: 100%;
+
+        height: 54px;
+
+        border: none;
+
+        border-radius: 14px;
+
+        font-size: 16px;
+        font-weight: 700;
+
+        color: white;
+
+        background: linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+        transition: 0.3s;
+    }
+
+    .upload-btn:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 10px 25px rgba(0, 119, 255, 0.4);
+    }
+
+    /* ================= TABLE ================= */
+
+    .profile-table {
+        width: 100%;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        backdrop-filter: blur(12px);
+    }
+
+    .profile-table tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .profile-table th {
+        width: 35%;
+
+        padding: 18px;
+
+        color: #00c6ff;
+
+        font-size: 15px;
+
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .profile-table td {
+        padding: 18px;
+
+        color: white;
+
+        font-weight: 500;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px) {
+
+        .profile-title {
+            font-size: 28px;
+        }
+
+        .profile-card {
+            padding: 20px;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+        }
+
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-11">
+
+            <div class="profile-card">
+
+                <h2 class="profile-title text-center">
+                    👨‍🎓 Student Profile
+                </h2>
+
+                <div class="row align-items-center">
+
+                    <!-- LEFT SIDE -->
+                    <div class="col-md-4 text-center mb-4">
+
+                        {% if user.photo and user.photo != "" %}
+
+                        <img src="{{ url_for('static', filename='profile_images/' ~ user.photo) }}" class="profile-img">
+
+                        {% else %}
+
+                        <img src="{{ url_for('static', filename='default.png') }}" class="profile-img">
+
+                        {% endif %}
+
+                        <!-- UPLOAD FORM -->
+                        <form method="POST" action="{{ url_for('upload_photo') }}" enctype="multipart/form-data"
+                            class="mt-4">
+
+                            <input type="file" name="photo" class="form-control mb-3" required>
+
+                            <button class="upload-btn">
+                                ⬆ Upload Photo
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="col-md-8">
+
+                        <table class="profile-table">
+
+                            <tr>
+                                <th>👤 Name</th>
+                                <td>{{ user.name }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>📧 Email</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>🆔 Roll No</th>
+                                <td>{{ user.roll_no }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>📄 Registration No</th>
+                                <td>{{ user.registration_no }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>🏫 Department</th>
+                                <td>{{ user.department }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>📱 Parent Phone</th>
+                                <td>{{ user.parent_phone }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>✉ Parent Email</th>
+                                <td>{{ user.parent_email }}</td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

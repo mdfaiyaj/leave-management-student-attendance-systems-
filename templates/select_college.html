@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:85vh;">
+
+    <div class="card shadow-lg border-0 rounded-4" style="width:100%; max-width:650px;">
+
+        <div class="card-body p-5">
+
+            <!-- BIG COLORFUL TITLE -->
+            <h1 class="fw-bold text-center mb-4" style="
+                    font-size:42px;
+                    background: linear-gradient(90deg,#0d6efd,#6610f2,#ff0080);
+                    -webkit-background-clip:text;
+                    -webkit-text-fill-color:transparent;
+                ">
+                Select Your College
+            </h1>
+
+            <form method="POST" id="collegeForm">
+
+                <select name="college" id="collegeSelect" class="form-select mb-4" required>
+                    <option value="">Search College</option>
+
+                    {% for c in colleges %}
+                    <option value="{{ c.name }}">
+                        {{ c.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold"
+                    style="height:50px; font-size:18px;">
+                    Continue
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // SEARCH DROPDOWN
+        $('#collegeSelect').select2({
+            placeholder: "🔍 Search Your College",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // POPUP
+        $('#collegeForm').on('submit', function (e) {
+
+            e.preventDefault();
+
+            let college =
+                $('#collegeSelect').val();
+
+            if (!college) {
+                return;
+            }
+
+            Swal.fire({
+
+                title: 'WELCOME',
+                html:
+                    `<div style="
+                    font-size:32px;
+                    font-weight:bold;
+                    color:#0d6efd;
+                    margin-top:10px;
+                ">
+                    ${college}
+                 </div>`,
+
+                icon: 'success',
+
+                background: '#ffffff',
+
+                showConfirmButton: false,
+
+                timer: 4000,
+
+                width: '600px'
+
+            }).then(() => {
+
+                $('#collegeForm')[0].submit();
+
+            });
+
+        });
+
+    });
+</script>
+
+<style>
+    /* BACKGROUND */
+    body {
+        background: linear-gradient(135deg, #eef2ff, #f8fbff);
+    }
+
+    /* SELECT BOX */
+    .select2-container .select2-selection--single {
+
+        height: 50px !important;
+
+        border-radius: 12px !important;
+
+        padding-top: 9px !important;
+
+        border: 2px solid #dbe4ff !important;
+
+        font-size: 16px !important;
+    }
+
+    /* TEXT */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+
+        line-height: 30px !important;
+    }
+
+    /* ARROW */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+
+        height: 50px !important;
+    }
+
+    /* CARD EFFECT */
+    .card {
+        backdrop-filter: blur(10px);
+    }
+</style>
+
+{% endblock %}

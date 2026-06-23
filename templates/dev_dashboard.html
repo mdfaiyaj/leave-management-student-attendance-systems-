@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h2 class="text-center text-primary">WELCOME DEVELOPER</h2>
+    <p class="text-center">Full System Control Panel</p>
+
+    <div class="mt-4 card p-4 shadow">
+        <h4>🚨 Danger Zone</h4>
+        <p>Developer can wipe entire database (Admins + Students + Attendance + Leaves)</p>
+
+        <a href="/dev/clear-all" class="btn btn-danger w-100 mb-3">
+            Delete ALL Data
+        </a>
+
+        <a href="/admin/dashboard" class="btn btn-info w-100">
+            Go to Admin Dashboard
+        </a>
+    </div>
+
+</div>
+{% endblock %}

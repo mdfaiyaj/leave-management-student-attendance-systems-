@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= MAIN CARD ================= */
+
+    .manage-card {
+
+        background: rgba(255, 255, 255, 0.10);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        border-radius: 30px;
+
+        padding: 35px;
+
+        margin-top: 35px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ================= TITLE ================= */
+
+    .page-title {
+
+        font-size: 42px;
+
+        font-weight: 800;
+
+        text-align: center;
+
+        margin-bottom: 35px;
+
+        background:
+            linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-wrapper {
+
+        overflow-x: auto;
+    }
+
+    .custom-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* TABLE HEAD */
+
+    .custom-table thead {
+
+        background:
+            linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+        color: white;
+    }
+
+    .custom-table th {
+
+        padding: 16px;
+
+        text-align: center;
+
+        font-size: 16px;
+
+        font-weight: 700;
+
+        white-space: nowrap;
+    }
+
+    /* TABLE BODY */
+
+    .custom-table td {
+
+        padding: 15px;
+
+        text-align: center;
+
+        color: white;
+
+        font-size: 15px;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.08);
+
+        vertical-align: middle;
+    }
+
+    /* HOVER */
+
+    .custom-table tbody tr:hover {
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        transition: 0.3s;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .action-btn {
+
+        border: none;
+
+        padding: 10px 16px;
+
+        border-radius: 14px;
+
+        color: white;
+
+        font-size: 14px;
+
+        font-weight: 700;
+
+        text-decoration: none;
+
+        display: inline-block;
+
+        margin: 4px;
+
+        transition: 0.3s;
+    }
+
+    .action-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.25);
+
+        color: white;
+    }
+
+    /* BUTTON COLORS */
+
+    .btn-edit {
+        background: linear-gradient(90deg, #00b4ff, #0066ff);
+    }
+
+    .btn-reset {
+        background: linear-gradient(90deg, #f7971e, #ffd200);
+        color: #222;
+    }
+
+    .btn-delete {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-row {
+
+        color: white;
+
+        font-size: 20px;
+
+        font-weight: 700;
+
+        padding: 30px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px) {
+
+        .manage-card {
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 30px;
+        }
+
+        .action-btn {
+            width: 100%;
+        }
+
+    }
+</style>
+
+<div class="container">
+
+    <div class="manage-card">
+
+        <!-- TITLE -->
+
+        <h2 class="page-title">
+            👨‍🎓 Manage Students
+        </h2>
+
+        <!-- TABLE -->
+
+        <div class="table-wrapper">
+
+            <table class="custom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Roll No</th>
+                        <th>Reg. No</th>
+                        <th>Parent Phone</th>
+                        <th>Parent Email</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for u in users %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>{{ u.name }}</td>
+
+                        <td>{{ u.email }}</td>
+
+                        <td>{{ u.department }}</td>
+
+                        <td>{{ u.roll_no }}</td>
+
+                        <td>{{ u.registration_no }}</td>
+
+                        <td>{{ u.parent_phone }}</td>
+
+                        <td>{{ u.parent_email }}</td>
+
+                        <td>
+
+                            <!-- EDIT -->
+
+                            <a href="{{ url_for('edit_user', uid=u.id) }}" class="action-btn btn-edit">
+
+                                ✏ Edit
+
+                            </a>
+
+                            <!-- RESET -->
+
+                            <a href="{{ url_for('admin_reset_password', uid=u.id) }}" class="action-btn btn-reset">
+
+                                🔑 Reset Password
+
+                            </a>
+
+                            <!-- DELETE -->
+
+                            <a href="{{ url_for('admin_delete_user', uid=u.id) }}" class="action-btn btn-delete"
+                                onclick="return confirm('Delete this student?')">
+
+                                🗑 Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="9" class="empty-row">
+
+                            🚫 No students found.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

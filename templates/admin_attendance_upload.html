@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= MAIN CARD ================= */
+
+    .upload-card {
+
+        background: rgba(255, 255, 255, 0.10);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        border-radius: 28px;
+
+        padding: 35px;
+
+        margin-top: 35px;
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ================= TITLE ================= */
+
+    .page-title {
+
+        font-size: 38px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(90deg, #00c6ff, #0072ff, #7f5cff);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 35px;
+    }
+
+    /* ================= LABEL ================= */
+
+    label {
+
+        color: white;
+
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+    /* ================= INPUT ================= */
+
+    .form-control,
+    .form-select {
+
+        height: 54px;
+
+        border-radius: 14px !important;
+
+        border: none !important;
+
+        background: rgba(255, 255, 255, 0.92) !important;
+
+        box-shadow: none !important;
+    }
+
+    /* FILE INPUT */
+
+    input[type="file"] {
+
+        padding-top: 12px;
+    }
+
+    /* FOCUS */
+
+    .form-control:focus,
+    .form-select:focus {
+
+        border: 2px solid #00bfff !important;
+
+        box-shadow:
+            0 0 15px rgba(0, 191, 255, 0.5) !important;
+    }
+
+    /* ================= BUTTON ================= */
+
+    .upload-btn {
+
+        margin-top: 28px;
+
+        width: 100%;
+
+        height: 58px;
+
+        border: none;
+
+        border-radius: 16px;
+
+        font-size: 18px;
+
+        font-weight: 700;
+
+        color: white;
+
+        background:
+            linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+        transition: 0.3s;
+    }
+
+    .upload-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 10px 25px rgba(0, 119, 255, 0.4);
+    }
+
+    /* ================= ICON BOX ================= */
+
+    .upload-icon {
+
+        width: 110px;
+
+        height: 110px;
+
+        margin: auto;
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(135deg, #00b4ff, #0066ff, #7f5cff);
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 50px;
+
+        color: white;
+
+        margin-bottom: 25px;
+
+        box-shadow:
+            0 10px 25px rgba(0, 119, 255, 0.35);
+    }
+
+    /* ================= INFO BOX ================= */
+
+    .info-box {
+
+        margin-top: 25px;
+
+        background: rgba(255, 255, 255, 0.08);
+
+        border-radius: 18px;
+
+        padding: 18px;
+
+        color: white;
+
+        font-size: 15px;
+
+        line-height: 1.8;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px) {
+
+        .upload-card {
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+    }
+</style>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="upload-card">
+
+                <!-- ICON -->
+                <div class="upload-icon">
+                    📤
+                </div>
+
+                <!-- TITLE -->
+                <h2 class="page-title text-center">
+                    Upload Students Data
+                </h2>
+
+                <!-- FORM -->
+                <form method="POST" enctype="multipart/form-data">
+
+                    <div class="row g-4">
+
+                        <!-- BRANCH -->
+                        <div class="col-md-4">
+
+                            <label>
+                                Branch
+                            </label>
+
+                            <select name="branch" class="form-select" required>
+
+                                <option value="">
+                                    Select Branch
+                                </option>
+
+                                <option value="CSE (Network)">
+                                    CSE Network
+                                </option>
+
+                                <option value="CSE (Cyber Security)">
+                                    CSE Cyber Security
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- SEMESTER -->
+                        <div class="col-md-3">
+
+                            <label>
+                                Semester
+                            </label>
+
+                            <select name="semester" class="form-select" required>
+
+                                {% for i in range(1,9) %}
+
+                                <option value="{{ i }}">
+                                    Semester {{ i }}
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <!-- FILE -->
+                        <div class="col-md-5">
+
+                            <label>
+                                Upload PDF / Excel
+                            </label>
+
+                            <input type="file" name="file" class="form-control" accept=".pdf,.xlsx" required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTON -->
+
+                    <button class="upload-btn">
+
+                        🚀 Upload & Auto Detect Students
+
+                    </button>
+
+                </form>
+
+                <!-- INFO -->
+
+                <div class="info-box">
+
+                    ✅ Supported Files:
+                    <b>PDF</b> and <b>Excel (.xlsx)</b>
+
+                    <br><br>
+
+                    📌 System automatically detects:
+                    <br>
+
+                    • Student Name
+                    <br>
+
+                    • Registration Number
+                    <br>
+
+                    • Branch
+                    <br>
+
+                    • Semester
+
+                    <br><br>
+
+                    ⚡ Imported students will automatically appear
+                    in the student database.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

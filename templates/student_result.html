@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .result-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(18px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 35px rgba(0, 0, 0, 0.4);
+        padding: 35px;
+    }
+
+    .result-title {
+        font-size: 38px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #00c6ff, #0072ff, #7b2ff7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .form-control,
+    .form-select {
+
+        height: 55px;
+        border-radius: 14px;
+        border: none;
+        background: rgba(255, 255, 255, 0.95);
+        color: #111;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: none !important;
+    }
+
+    .form-control::placeholder {
+        color: #666;
+    }
+
+    .fetch-btn {
+
+        height: 55px;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: bold;
+
+        background: linear-gradient(90deg,
+                #0072ff,
+                #00c6ff,
+                #7b2ff7);
+
+        background-size: 300% 300%;
+
+        animation: gradientMove 5s ease infinite;
+
+        color: white;
+        transition: 0.3s;
+    }
+
+    .fetch-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(0, 114, 255, 0.5);
+    }
+
+    @keyframes gradientMove {
+
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .table {
+        overflow: hidden;
+        border-radius: 18px;
+    }
+
+    .table thead {
+        background: linear-gradient(90deg, #0072ff, #7b2ff7);
+        color: white;
+    }
+
+    .table tbody tr {
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .table tbody tr:hover {
+        background: #f2f7ff;
+        transition: 0.3s;
+    }
+
+    .result-box {
+
+        background: rgba(255, 255, 255, 0.15);
+        padding: 20px;
+        border-radius: 18px;
+        margin-top: 20px;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        backdrop-filter: blur(8px);
+
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .result-frame {
+
+        width: 100%;
+        height: 700px;
+        border: none;
+        border-radius: 18px;
+        margin-top: 25px;
+        background: white;
+    }
+
+    .glass-input {
+
+        background: rgba(255, 255, 255, 0.92) !important;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+
+    <div class="result-card">
+
+        <h2 class="result-title mb-4">
+            🎓 My BEU Result
+        </h2>
+
+        <!-- RESULT FORM -->
+        <form onsubmit="openResult(event)">
+            <div class="row g-3">
+
+                <div class="col-md-5">
+
+                    <input type="text" id="registration_no" placeholder="Enter Registration Number"
+                        class="form-control glass-input" required>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <select id="semester" class="form-select glass-input">
+
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                        <option value="7">Semester 7</option>
+                        <option value="8">Semester 8</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button type="button" onclick="openBEUResult()" class="btn btn-primary">
+                        Fetch Result
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- RESULT SECTION -->
+
+        <div id="resultContainer"></div>
+
+        {% if data %}
+
+        <hr class="text-white mt-5">
+
+        <div class="table-responsive mt-4">
+
+            <table class="table table-bordered text-center align-middle">
+
+                <thead>
+
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for s,m in data.subjects %}
+
+                    <tr>
+                        <td>{{ s }}</td>
+                        <td>{{ m }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="result-box">
+
+            ⭐ Highest Subject:
+            {{ data.highest_subject }}
+
+            |
+
+            Marks:
+            {{ data.highest_marks }}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+    function openBEUResult() {
+
+        let regNo = document.getElementById("registration_no").value;
+        let semester = document.getElementById("semester").value;
+
+        if (!regNo) {
+            alert("Please enter Registration Number");
+            return;
+        }
+
+        let beuUrl = "https://results.beup.ac.in/";
+
+        window.open(beuUrl, "_blank");
+    }
+</script>
+
+{% endblock %}

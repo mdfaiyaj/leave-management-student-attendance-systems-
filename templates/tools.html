@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    ```
+    <div class="card shadow-lg border-0 p-4">
+
+        <h2 class="text-center mb-4 text-primary">
+            📄 PDF & Image Tools
+        </h2>
+
+        <form action="/upload-tool" method="POST" enctype="multipart/form-data">
+
+            <!-- FILE -->
+
+            <div class="mb-3">
+
+                <label class="form-label fw-bold">
+                    Select File
+                </label>
+
+                <input type="file" id="fileInput" name="file" class="form-control mb-3" required>
+            </div>
+
+            <!-- ACTION -->
+
+            <div class="mb-3">
+
+                <label class="form-label fw-bold">
+                    Select Tool
+                </label>
+
+                <select name="action" id="toolSelect" class="form-select">
+
+                    <optgroup label="🖼 Image Tools">
+
+                        <option value="resize_image">
+                            Resize Image
+                        </option>
+
+                        <option value="crop_image">
+                            Crop Image
+                        </option>
+
+                        <option value="compress_image">
+                            Compress Image
+                        </option>
+
+                        <option value="image_pdf">
+                            Image To PDF
+                        </option>
+
+                        <option value="ocr">
+                            Image To Text (OCR)
+                        </option>
+
+                    </optgroup>
+
+                    <optgroup label="📄 PDF Tools">
+
+                        <option value="resize_pdf">
+                            Resize PDF
+                        </option>
+
+                        <option value="merge_pdf">
+                            Merge PDF
+                        </option>
+
+                        <option value="split_pdf">
+                            Split PDF
+                        </option>
+
+                        <option value="compress_pdf">
+                            Compress PDF
+                        </option>
+
+                        <option value="rotate_pdf">
+                            Rotate PDF
+                        </option>
+
+                        <option value="watermark_pdf">
+                            Add Watermark
+                        </option>
+
+                        <option value="edit_pdf_text">
+                            Edit PDF Text
+                        </option>
+
+                        <option value="pdf_word">
+                            PDF To Word
+                        </option>
+
+                        <option value="pdf_excel">
+                            PDF To Excel
+                        </option>
+
+                        <option value="pdf_image">
+                            PDF To Image
+                        </option>
+                        <option value="image_excel">Image To Excel</option>
+                        <option value="image_word">Image To Word</option>
+                        <option value="image_pdf">Image To PDF</option>
+                        <option value="pdf_image">PDF To Image</option>
+                        <option value="compress_image">Compress Image</option>
+                        <option value="rotate_pdf">Rotate PDF</option>
+                    </optgroup>
+
+                    <optgroup label="📊 Office Tools">
+
+                        <option value="word_pdf">
+                            Word To PDF
+                        </option>
+
+                        <option value="excel_pdf">
+                            Excel To PDF
+                        </option>
+
+                    </optgroup>
+
+                </select>
+
+            </div>
+
+            <!-- IMAGE RESIZE -->
+
+            <div id="resizeOptions">
+
+                <label class="form-label">
+                    Image Size
+                </label>
+
+                <input type="number" name="width" class="form-control mb-2" placeholder="Width">
+
+                <input type="number" name="height" class="form-control mb-3" placeholder="Height">
+
+            </div>
+
+            <!-- PDF TEXT EDIT -->
+
+            <div id="pdfTextBox" style="display:none;">
+
+                <label class="form-label">
+                    Replace PDF Text
+                </label>
+
+                <input type="text" name="old_text" class="form-control mb-2" placeholder="Old Text">
+
+                <input type="text" name="new_text" class="form-control mb-3" placeholder="New Text">
+
+            </div>
+
+            <!-- WATERMARK -->
+
+            <div id="watermarkBox" style="display:none;">
+
+                <label class="form-label">
+                    Watermark Text
+                </label>
+
+                <input type="text" name="watermark" class="form-control mb-3" placeholder="Enter Watermark">
+
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+
+                🚀 Process File
+
+            </button>
+
+        </form>
+
+    </div>
+    ```
+
+</div>
+<script>
+
+    const toolSelect = document.getElementById("toolSelect");
+    const fileInput = document.getElementById("fileInput");
+
+    toolSelect.addEventListener("change", function () {
+
+        let value = this.value;
+
+        // Image Tools
+        if (
+            value === "resize_image" ||
+            value === "compress_image" ||
+            value === "image_pdf" ||
+            value === "image_word" ||
+            value === "image_excel" ||
+            value === "ocr"
+        ) {
+
+            fileInput.accept = "image/*";
+        }
+
+        // PDF Tools
+        else if (
+            value === "resize_pdf" ||
+            value === "pdf_word" ||
+            value === "pdf_excel" ||
+            value === "pdf_image" ||
+            value === "edit_pdf_text" ||
+            value === "rotate_pdf"
+        ) {
+
+            fileInput.accept = ".pdf";
+        }
+
+        else {
+
+            fileInput.accept = "*";
+        }
+
+    });
+
+</script>
+
+<script>
+
+    const toolSelect =
+        document.getElementById("toolSelect");
+
+    toolSelect.addEventListener(
+        "change",
+        function () {
+
+            let value = this.value;
+
+            document.getElementById(
+                "resizeOptions"
+            ).style.display =
+                value === "resize_image"
+                    ? "block"
+                    : "none";
+
+            document.getElementById(
+                "pdfTextBox"
+            ).style.display =
+                value === "edit_pdf_text"
+                    ? "block"
+                    : "none";
+
+            document.getElementById(
+                "watermarkBox"
+            ).style.display =
+                value === "watermark_pdf"
+                    ? "block"
+                    : "none";
+        }
+    );
+
+    window.onload = function () {
+
+        document.getElementById(
+            "resizeOptions"
+        ).style.display = "none";
+
+    };
+
+</script>
+
+{% endblock %}

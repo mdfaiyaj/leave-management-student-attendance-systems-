@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* ================= BACKGROUND ================= */
+
+    body {
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),
+            url("/static/bg.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        animation: zoomBg 18s infinite alternate;
+    }
+
+    @keyframes zoomBg {
+        0% {
+            background-size: 100%;
+        }
+
+        100% {
+            background-size: 110%;
+        }
+    }
+
+    /* ================= MAIN CHAT ================= */
+
+    .chat-wrapper {
+
+        max-width: 1000px;
+
+        margin: 35px auto;
+
+        border-radius: 28px;
+
+        overflow: hidden;
+
+        background: rgba(255, 255, 255, 0.10);
+
+        backdrop-filter: blur(18px);
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ================= HEADER ================= */
+
+    .chat-header {
+
+        background:
+            linear-gradient(90deg, #00b4ff, #0066ff, #7f5cff);
+
+        color: white;
+
+        padding: 18px 24px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+    }
+
+    /* STUDENT INFO */
+
+    .student-info h5 {
+
+        margin: 0;
+
+        font-size: 22px;
+
+        font-weight: 700;
+    }
+
+    .student-info small {
+
+        opacity: 0.9;
+
+        font-size: 13px;
+    }
+
+    /* ONLINE */
+
+    .online {
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        background: rgba(255, 255, 255, 0.15);
+
+        padding: 8px 14px;
+
+        border-radius: 20px;
+    }
+
+    /* ================= CHAT BODY ================= */
+
+    .chat-box {
+
+        height: 500px;
+
+        overflow-y: auto;
+
+        padding: 25px;
+
+        background:
+            rgba(255, 255, 255, 0.05);
+    }
+
+    /* SCROLLBAR */
+
+    .chat-box::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+        background: #00b4ff;
+        border-radius: 10px;
+    }
+
+    /* ================= MESSAGE ROW ================= */
+
+    .chat {
+
+        display: flex;
+
+        margin-bottom: 18px;
+
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0px);
+        }
+    }
+
+    /* STUDENT LEFT */
+
+    .chat.student {
+        justify-content: flex-start;
+    }
+
+    /* ADMIN RIGHT */
+
+    .chat.admin {
+        justify-content: flex-end;
+    }
+
+    /* ================= BUBBLE ================= */
+
+    .bubble {
+
+        max-width: 72%;
+
+        padding: 14px 18px;
+
+        border-radius: 20px;
+
+        position: relative;
+
+        font-size: 15px;
+
+        line-height: 1.5;
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    /* STUDENT */
+
+    .student .bubble {
+
+        background:
+            rgba(255, 255, 255, 0.92);
+
+        color: #222;
+
+        border-bottom-left-radius: 5px;
+    }
+
+    /* ADMIN */
+
+    .admin .bubble {
+
+        background:
+            linear-gradient(135deg, #00b4ff, #0066ff);
+
+        color: white;
+
+        border-bottom-right-radius: 5px;
+    }
+
+    /* ================= TIME ================= */
+
+    .time {
+
+        font-size: 11px;
+
+        margin-top: 8px;
+
+        text-align: right;
+
+        opacity: 0.8;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-chat {
+
+        text-align: center;
+
+        color: #ddd;
+
+        margin-top: 100px;
+
+        font-size: 20px;
+    }
+
+    /* ================= INPUT AREA ================= */
+
+    .chat-input {
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        padding: 18px;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .chat-input form {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+    }
+
+    /* INPUT */
+
+    .chat-input input {
+
+        flex: 1;
+
+        border: none;
+
+        border-radius: 30px;
+
+        padding: 14px 20px;
+
+        height: 55px;
+
+        background: rgba(255, 255, 255, 0.95);
+
+        font-size: 15px;
+
+        outline: none;
+
+        transition: 0.3s;
+    }
+
+    .chat-input input:focus {
+
+        box-shadow:
+            0 0 15px rgba(0, 191, 255, 0.5);
+    }
+
+    /* BUTTON */
+
+    .send-btn {
+
+        width: 55px;
+
+        height: 55px;
+
+        border: none;
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(135deg, #00b4ff, #0066ff, #7f5cff);
+
+        color: white;
+
+        font-size: 20px;
+
+        transition: 0.3s;
+    }
+
+    .send-btn:hover {
+
+        transform: scale(1.08);
+
+        box-shadow:
+            0 8px 20px rgba(0, 119, 255, 0.4);
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px) {
+
+        .chat-wrapper {
+            margin: 15px;
+        }
+
+        .student-info h5 {
+            font-size: 18px;
+        }
+
+        .bubble {
+            max-width: 90%;
+            font-size: 14px;
+        }
+
+    }
+</style>
+
+<div class="chat-wrapper">
+
+    <!-- HEADER -->
+
+    <div class="chat-header">
+
+        <div class="student-info">
+
+            <h5>
+                👨‍🎓 {{ student.name }}
+            </h5>
+
+            <small>
+
+                Semester {{ student.semester }}
+                |
+                Reg {{ student.registration_no }}
+
+            </small>
+
+        </div>
+
+        <div class="online">
+            🟢 Online
+        </div>
+
+    </div>
+
+    <!-- CHAT BODY -->
+
+    <div class="chat-box" id="chatBox">
+
+        {% if messages %}
+
+        {% for m in messages %}
+
+        <div class="chat {{ m.sender }}">
+
+            <div class="bubble">
+
+                {{ m.message }}
+
+                <div class="time">
+
+                    {{ m.created_at }}
+
+                    {% if m.sender == 'student' %}
+
+                    {% if m.seen == 1 %}
+                    ✔✔ Seen
+                    {% else %}
+                    ✔ Sent
+                    {% endif %}
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+
+        <div class="empty-chat">
+
+            💬 No messages yet
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- INPUT -->
+
+    <div class="chat-input">
+
+        <form method="POST" action="{{ url_for('admin_support_reply', student_id=student_id) }}">
+
+            <input type="text" name="reply" placeholder="Type a message..." required>
+
+            <button class="send-btn">
+
+                ➤
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    const chatBox = document.getElementById("chatBox");
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+</script>
+
+{% endblock %}
